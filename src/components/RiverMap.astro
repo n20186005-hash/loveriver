@@ -1,0 +1,194 @@
+---
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+const regions = [
+  {
+    id: "heart",
+    index: "01",
+    name: "愛河之心",
+    station: "輕軌 C24",
+    time: "45–90 分鐘",
+    note: "生態池、單車與夜間散步",
+    href: "/areas/heart-of-love-river/",
+    map: "https://www.google.com/maps/search/?api=1&query=%E6%84%9B%E6%B2%B3%E4%B9%8B%E5%BF%83",
+  },
+  {
+    id: "downtown",
+    index: "02",
+    name: "愛河市區段",
+    station: "捷運前金／鹽埕埔",
+    time: "1.5–2.5 小時",
+    note: "愛之船、貢多拉與經典夜景",
+    href: "/areas/downtown-love-river/",
+    map: "https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E9%9B%84%E6%84%9B%E6%B2%B3%E5%9C%8B%E8%B3%93%E7%AB%99",
+  },
+  {
+    id: "bay",
+    index: "03",
+    name: "愛河灣",
+    station: "輕軌 C10–C12",
+    time: "2–3 小時",
+    note: "高流、真愛碼頭與港灣夕照",
+    href: "/areas/love-river-bay/",
+    map: "https://www.google.com/maps/search/?api=1&query=%E6%84%9B%E6%B2%B3%E7%81%A3",
+  },
+];
+---
+
+<div class:list={["river-map overflow-hidden rounded-[2rem] bg-deep text-white", compact ? "" : "shadow-2xl"]} data-river-map>
+  <div class="grid lg:grid-cols-[1.15fr_0.85fr]">
+    <div class="relative min-h-[32rem] overflow-hidden border-white/10 p-6 sm:p-9 lg:border-r">
+      <div class="absolute inset-0 opacity-30" aria-hidden="true">
+        <div class="absolute -left-28 top-20 h-72 w-72 rounded-full bg-river blur-[100px]"></div>
+        <div class="absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-coral blur-[120px]"></div>
+      </div>
+      <div class="relative z-10 flex items-center justify-between gap-4">
+        <p class="text-sm font-bold text-white/80">從北向南，三段水岸一次看懂</p>
+        <a href="/map/" class="rounded-full border border-white/15 px-4 py-2 text-xs font-bold text-white no-underline hover:bg-white/10">
+          完整地圖 ↗
+        </a>
+      </div>
+
+      <svg
+        class="relative z-10 mx-auto mt-5 h-[25rem] w-full max-w-[36rem]"
+        viewBox="0 0 560 410"
+        role="img"
+        aria-labelledby="river-map-title river-map-desc"
+      >
+        <title id="river-map-title">高雄愛河三大旅遊區域示意圖</title>
+        <desc id="river-map-desc">由北向南依序為愛河之心、愛河市區段與愛河灣。</desc>
+        <path
+          d="M385 14c-66 39-21 84-104 105-74 18-46 65-117 92-83 31-28 89-91 124-28 16-39 39-32 62"
+          fill="none"
+          stroke="rgb(223 241 240 / .16)"
+          stroke-width="34"
+          stroke-linecap="round"
+        />
+        <path
+          d="M385 14c-66 39-21 84-104 105-74 18-46 65-117 92-83 31-28 89-91 124-28 16-39 39-32 62"
+          fill="none"
+          stroke="#78c5cf"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-dasharray="8 11"
+        />
+        <g class="map-point is-active" data-map-point="heart" role="button" tabindex="0" aria-label="01 愛河之心 C24 · 生態與單車">
+          <circle cx="354" cy="70" r="29" fill="#F6F1E7" />
+          <circle cx="354" cy="70" r="10" fill="#DE705D" />
+          <path d="M383 69h102" stroke="rgb(255 255 255 / .38)" stroke-width="1" />
+          <text x="397" y="58" fill="#fff" font-size="13" font-weight="700">01 愛河之心</text>
+          <text x="397" y="82" fill="rgb(255 255 255 / .75)" font-size="11">C24 · 生態與單車</text>
+        </g>
+        <g class="map-point" data-map-point="downtown" role="button" tabindex="0" aria-label="02 愛河市區段 遊船 · 經典夜景">
+          <circle cx="179" cy="210" r="29" fill="#F6F1E7" />
+          <circle cx="179" cy="210" r="10" fill="#E9B861" />
+          <path d="M208 210h194" stroke="rgb(255 255 255 / .38)" stroke-width="1" />
+          <text x="223" y="198" fill="#fff" font-size="13" font-weight="700">02 愛河市區段</text>
+          <text x="223" y="222" fill="rgb(255 255 255 / .75)" font-size="11">遊船 · 經典夜景</text>
+        </g>
+        <g class="map-point" data-map-point="bay" role="button" tabindex="0" aria-label="03 愛河灣 高流 · 港灣夕照">
+          <circle cx="75" cy="341" r="29" fill="#F6F1E7" />
+          <circle cx="75" cy="341" r="10" fill="#1C7F96" />
+          <path d="M104 341h254" stroke="rgb(255 255 255 / .38)" stroke-width="1" />
+          <text x="119" y="329" fill="#fff" font-size="13" font-weight="700">03 愛河灣</text>
+          <text x="119" y="353" fill="rgb(255 255 255 / .75)" font-size="11">高流 · 港灣夕照</text>
+        </g>
+      </svg>
+    </div>
+    <div class="p-5 sm:p-8">
+      <p class="mb-4 text-xs font-extrabold tracking-[0.18em] text-white/68">選擇區域查看行程資訊</p>
+      <div class="grid gap-3">
+        {
+          regions.map((region, index) => (
+            <article
+              class:list={[
+                "region-card rounded-2xl border p-5 transition",
+                index === 0 ? "is-active border-gold/50 bg-white/10" : "border-white/8 bg-white/[0.035]",
+              ]}
+              data-region-card={region.id}
+            >
+              <button class="flex w-full items-start gap-4 text-left" type="button" data-region-button={region.id}>
+                <span class="mt-0.5 text-xs font-extrabold tracking-[0.16em] text-gold">{region.index}</span>
+                <span class="grow">
+                  <span class="block text-lg font-extrabold">{region.name}</span>
+                  <span class="mt-1 block text-xs leading-5 text-white/70">{region.note}</span>
+                </span>
+                <span class="text-white/30" aria-hidden="true">＋</span>
+              </button>
+              <div class:list={["region-detail mt-5 border-t border-white/10 pt-4", index === 0 ? "" : "hidden"]} data-region-detail={region.id}>
+                <dl class="grid grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <dt class="text-white/70">最近車站</dt>
+                    <dd class="mt-1 font-bold text-white">{region.station}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-white/70">建議停留</dt>
+                    <dd class="mt-1 font-bold text-white">{region.time}</dd>
+                  </div>
+                </dl>
+                <div class="mt-4 flex gap-2">
+                  <a href={region.href} class="rounded-full bg-white px-4 py-2 text-xs font-extrabold text-navy no-underline">查看玩法</a>
+                  <a href={region.map} target="_blank" rel="noopener" class="rounded-full border border-white/15 px-4 py-2 text-xs font-extrabold text-white no-underline">開啟導航 ↗</a>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+      <p class="mt-6 text-[0.68rem] leading-5 text-white/65">此圖為區域關係示意，非精確比例地圖。步行與搭車前請再開啟導航確認。</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll("[data-river-map]").forEach((map) => {
+    const activate = (id: string | null) => {
+      if (!id) return;
+      map.querySelectorAll("[data-region-card]").forEach((card) => {
+        const active = card.getAttribute("data-region-card") === id;
+        card.classList.toggle("is-active", active);
+        card.classList.toggle("border-gold/50", active);
+        card.classList.toggle("bg-white/10", active);
+      });
+      map.querySelectorAll("[data-region-detail]").forEach((detail) => {
+        detail.classList.toggle("hidden", detail.getAttribute("data-region-detail") !== id);
+      });
+      map.querySelectorAll("[data-map-point]").forEach((point) => {
+        point.classList.toggle("is-active", point.getAttribute("data-map-point") === id);
+      });
+    };
+    map.querySelectorAll("[data-region-button], [data-map-point]").forEach((control) => {
+      const id = control.getAttribute("data-region-button") || control.getAttribute("data-map-point");
+      control.addEventListener("click", () => activate(id));
+      control.addEventListener("keydown", (event) => {
+        const keyboardEvent = event as KeyboardEvent;
+        if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") activate(id);
+      });
+    });
+  });
+</script>
+
+<style>
+  .map-point {
+    cursor: pointer;
+    opacity: 0.5;
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .map-point:hover,
+  .map-point.is-active {
+    opacity: 1;
+    transform: scale(1.025);
+  }
+
+  .region-card.is-active {
+    box-shadow: inset 3px 0 0 var(--color-gold);
+  }
+</style>

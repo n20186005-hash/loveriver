@@ -1,0 +1,146 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import RiverMap from "../../components/RiverMap.astro";
+
+const loveRiverGoogleMaps = "https://maps.app.goo.gl/YBjn4B8MgUa51vNj9";
+
+const points = [
+  { cat: "區域", name: "愛河之心", station: "C24", note: "生態、單車、夜間散步", map: "https://www.google.com/maps/search/?api=1&query=%E6%84%9B%E6%B2%B3%E4%B9%8B%E5%BF%83" },
+  { cat: "碼頭", name: "愛之船國賓站", station: "O4／O2", note: "愛之船主要乘船點", map: "https://www.google.com/maps/search/?api=1&query=%E6%84%9B%E4%B9%8B%E8%88%B9%E5%9C%8B%E8%B3%93%E7%AB%99" },
+  { cat: "碼頭", name: "貢多拉乘船區", station: "O4", note: "河東路與民生路周邊", map: "https://www.google.com/maps/search/?api=1&query=%E6%84%9B%E6%B2%B3%E8%B2%A2%E5%A4%9A%E6%8B%89" },
+  { cat: "景點", name: "高雄市立歷史博物館", station: "O2", note: "城市歷史與河岸順遊", map: "https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E9%9B%84%E5%B8%82%E7%AB%8B%E6%AD%B7%E5%8F%B2%E5%8D%9A%E7%89%A9%E9%A4%A8" },
+  { cat: "景點", name: "真愛碼頭", station: "C11", note: "愛河灣與高流入口", map: "https://www.google.com/maps/search/?api=1&query=%E7%9C%9F%E6%84%9B%E7%A2%BC%E9%A0%AD" },
+  { cat: "景點", name: "光榮碼頭", station: "C10", note: "夕陽與高流全景", map: "https://www.google.com/maps/search/?api=1&query=%E5%85%89%E6%A6%AE%E7%A2%BC%E9%A0%AD" },
+  { cat: "景點", name: "高雄流行音樂中心", station: "C10／C11", note: "港灣建築與表演", map: "https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E9%9B%84%E6%B5%81%E8%A1%8C%E9%9F%B3%E6%A8%82%E4%B8%AD%E5%BF%83" },
+  { cat: "景點", name: "大港橋", station: "C12／C13", note: "步行橋與港區景觀", map: "https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E6%B8%AF%E6%A9%8B" },
+  { cat: "景點", name: "駁二藝術特區", station: "C12／C13", note: "倉庫、展覽與戶外藝術", map: "https://www.google.com/maps/search/?api=1&query=%E9%A7%81%E4%BA%8C%E8%97%9D%E8%A1%93%E7%89%B9%E5%8D%80" },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "高雄愛河沿岸地圖",
+  numberOfItems: points.length,
+  itemListElement: points.map((point, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: point.name,
+    url: point.map,
+  })),
+};
+---
+
+<BaseLayout
+  title="愛河地圖｜三大區域、碼頭與最近車站"
+  description="高雄愛河地圖：先看愛河之心、市區遊船段與愛河灣的相對位置，再查碼頭、景點和最近捷運輕軌站。"
+  keywords={["愛河地圖", "愛河景點地圖", "愛河車站", "愛河碼頭"]}
+  schema={schema}
+>
+  <section class="bg-river-light py-16 lg:py-24">
+    <div class="site-shell">
+      <div class="grid gap-8 lg:grid-cols-[1fr_0.72fr] lg:items-end">
+        <div>
+          <h1 class="max-w-[12ch] text-[clamp(2.8rem,7vw,5.8rem)] font-extrabold leading-[0.98] tracking-[-0.06em] text-navy">一條河，三種玩法</h1>
+        </div>
+        <p class="max-w-xl text-base leading-8 text-ink/62">先用方向圖看懂北、中、南，再從點位清單開啟即時導航。愛河之心不在經典遊船區旁，這是最重要的距離觀念。</p>
+      </div>
+      <div class="mt-12">
+        <RiverMap />
+      </div>
+    </div>
+  </section>
+  <section class="section-pad bg-sand">
+    <div class="site-shell">
+      <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div>
+          <h2 class="section-title">Google 地圖上的愛河</h2>
+          <p class="mt-5 max-w-2xl text-base leading-8 text-ink/70">
+            查看愛河市區段的實際位置、周邊道路與鄰近地標，也可以直接開啟 Google Maps 規劃路線。
+          </p>
+        </div>
+        <a
+          href={loveRiverGoogleMaps}
+          target="_blank"
+          rel="noopener"
+          class="btn-primary"
+        >
+          開啟 Google Maps
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <div class="mt-10 overflow-hidden rounded-[2rem] border border-navy/10 bg-white shadow-[0_2rem_5rem_rgba(6,27,42,.1)]">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3682.775406874204!2d120.28912909999998!3d22.624860599999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x346e047baf35dadd%3A0x94ae151ca559bd56!2sLove%20River!5e0!3m2!1szh-TW!2stw!4v1784878884839!5m2!1szh-TW!2stw"
+          width="600"
+          height="450"
+          class="block h-[28rem] w-full border-0 md:h-[36rem]"
+          title="高雄愛河 Google 地圖"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+  <section class="section-pad bg-cream">
+    <div class="site-shell">
+      <div class="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+        <div>
+          <h2 class="section-title">沿岸點位與最近車站</h2>
+        </div>
+        <div class="flex flex-wrap gap-2" data-filters>
+          {
+            ["全部", "區域", "碼頭", "景點"].map((cat, index) => (
+              <button
+                type="button"
+                data-filter={cat}
+                aria-pressed={index === 0 ? "true" : "false"}
+                class:list={[
+                  "min-h-11 rounded-full border px-4 text-xs font-extrabold transition",
+                  index === 0 ? "border-navy bg-navy text-white" : "border-navy/12 bg-white text-navy",
+                ]}
+              >
+                {cat}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <div class="mt-9 grid gap-3 md:grid-cols-2 lg:grid-cols-3" data-point-list>
+        {
+          points.map((point, index) => (
+            <article class="card flex min-h-44 flex-col p-5" data-point data-category={point.cat}>
+              <div class="flex items-center justify-between gap-3">
+                <span class="text-[0.64rem] font-extrabold tracking-[0.16em] text-river">{point.cat} · {String(index + 1).padStart(2, "0")}</span>
+                <span class="rounded-full bg-river-light px-3 py-1.5 text-[0.65rem] font-extrabold text-river">{point.station}</span>
+              </div>
+              <h3 class="mt-5 text-xl font-extrabold tracking-[-0.03em] text-navy">{point.name}</h3>
+              <p class="mt-2 text-sm leading-6 text-ink/52">{point.note}</p>
+              <a href={point.map} target="_blank" rel="noopener" class="mt-auto pt-5 text-xs font-extrabold text-coral no-underline">開啟 Google Maps ↗</a>
+            </article>
+          ))
+        }
+      </div>
+      <p class="mt-7 text-xs leading-6 text-ink/45">方向圖不按精確比例繪製；步行時間、無障礙動線、施工與交通狀況請以現場及即時導航為準。</p>
+    </div>
+  </section>
+  <script>
+    const filters = document.querySelectorAll("[data-filter]");
+    const points = document.querySelectorAll("[data-point]");
+    filters.forEach((button) => {
+      button.addEventListener("click", () => {
+        const value = button.getAttribute("data-filter");
+        filters.forEach((item) => {
+          const active = item === button;
+          item.setAttribute("aria-pressed", String(active));
+          item.classList.toggle("bg-navy", active);
+          item.classList.toggle("text-white", active);
+          item.classList.toggle("border-navy", active);
+        });
+        points.forEach((point) => {
+          point.classList.toggle("hidden", value !== "全部" && point.getAttribute("data-category") !== value);
+        });
+      });
+    });
+  </script>
+</BaseLayout>

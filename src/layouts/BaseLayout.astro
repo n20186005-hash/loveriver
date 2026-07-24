@@ -1,0 +1,196 @@
+---
+import "../styles/global.css";
+import Logo from "../components/Logo.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  keywords?: string[];
+  pageType?: "website" | "article";
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  image = "/images/hero-1280.webp",
+  imageAlt = "高雄愛河夜景與河面倒影",
+  keywords = ["高雄愛河", "愛河景點", "愛河夜景", "高雄旅遊"],
+  pageType = "website",
+  schema,
+} = Astro.props;
+
+const isHome = Astro.url.pathname === "/";
+const fullTitle = isHome ? title : `${title}｜高雄愛河旅遊指南`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+const preloadImage = image.replace(/\.webp$/, ".avif");
+const defaultSchema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "高雄愛河旅遊指南",
+    alternateName: "Love River Kaohsiung Guide",
+    url: "https://loveriver.org/",
+    inLanguage: "zh-Hant-TW",
+    description: "從愛河之心到愛河灣，提供分區、交通、遊船與行程資訊的高雄水岸旅遊指南。",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "高雄愛河旅遊指南",
+    url: "https://loveriver.org/",
+    logo: "https://loveriver.org/favicon.svg",
+  },
+];
+const jsonLd = schema ? (Array.isArray(schema) ? schema : [schema]) : defaultSchema;
+
+const mainNav = [
+  { href: "/map/", label: "愛河地圖" },
+  { href: "/boats/", label: "愛河遊船" },
+  { href: "/itineraries/2-hour/", label: "行程路線" },
+  { href: "/places/", label: "沿岸景點" },
+  { href: "/food/", label: "美食住宿" },
+  { href: "/events/", label: "活動情報" },
+];
+---
+
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords.join(",")} />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="zh-Hant" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" as="image" href={preloadImage} type="image/avif" fetchpriority="high" />
+    <meta property="og:locale" content="zh_TW" />
+    <meta property="og:type" content={pageType} />
+    <meta property="og:site_name" content="高雄愛河旅遊指南" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="theme-color" content="#09263a" />
+    {
+      jsonLd.map((item) => (
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />
+      ))
+    }
+  </head>
+  <body>
+    <a
+      href="#main-content"
+      class="fixed left-3 top-3 z-[100] -translate-y-24 rounded-full bg-white px-4 py-3 font-bold text-navy shadow-xl transition-transform focus:translate-y-0"
+    >
+      跳至主要內容
+    </a>
+    <header class="sticky top-0 z-50 border-b border-navy/8 bg-cream/92 backdrop-blur-xl">
+      <div class="site-shell flex h-[4.8rem] items-center justify-between">
+        <Logo />
+        <nav class="hidden items-center gap-1 lg:flex" aria-label="主要導覽">
+          {
+            mainNav.map((item) => (
+              <a
+                href={item.href}
+                aria-current={Astro.url.pathname.startsWith(item.href) ? "page" : undefined}
+                class="rounded-full px-3.5 py-2.5 text-[0.86rem] font-bold text-navy/68 no-underline transition hover:bg-white hover:text-navy aria-[current=page]:bg-river-light aria-[current=page]:text-river"
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+        <div class="hidden xl:block">
+          <a href="/areas/love-river-vs-heart-vs-bay/" class="btn-secondary">
+            第一次來先看
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <button
+          class="grid h-11 w-11 place-items-center rounded-full border border-navy/12 bg-white lg:hidden"
+          type="button"
+          aria-label="開啟選單"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          data-menu-trigger
+        >
+          <span class="text-xl" aria-hidden="true">☰</span>
+        </button>
+      </div>
+      <nav id="mobile-menu" class="site-shell hidden border-t border-navy/8 py-3 lg:hidden" aria-label="行動版導覽" data-mobile-menu>
+        <div class="grid grid-cols-2 gap-1">
+          {
+            mainNav.map((item) => (
+              <a href={item.href} class="rounded-xl px-3 py-3 text-sm font-bold text-navy no-underline hover:bg-river-light">
+                {item.label}
+              </a>
+            ))
+          }
+        </div>
+      </nav>
+    </header>
+    <main id="main-content">
+      <slot />
+    </main>
+    <footer class="bg-deep pb-10 pt-16 text-white">
+      <div class="site-shell grid gap-12 md:grid-cols-[1.2fr_1fr_1fr]">
+        <div>
+          <Logo light />
+          <p class="mt-5 max-w-sm text-sm leading-7 text-white/72">
+            從愛河之心到愛河灣，幫你在出發前快速選對區域、車站、遊船與散步路線。
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-extrabold tracking-[0.18em] text-gold">快速入口</p>
+          <div class="mt-4 grid gap-2 text-sm text-white/78">
+            <a href="/guide/" class="hover:text-white">高雄愛河完整攻略</a>
+            <a href="/transport/" class="hover:text-white">捷運、輕軌與停車</a>
+            <a href="/boats/cruise-comparison/" class="hover:text-white">愛之船與貢多拉比較</a>
+            <a href="/faq/" class="hover:text-white">常見問題</a>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-extrabold tracking-[0.18em] text-gold">熱門區域</p>
+          <div class="mt-4 grid gap-2 text-sm text-white/78">
+            <a href="/areas/downtown-love-river/" class="hover:text-white">愛河市區段</a>
+            <a href="/areas/love-river-bay/" class="hover:text-white">愛河灣</a>
+            <a href="/areas/heart-of-love-river/" class="hover:text-white">愛河之心</a>
+            <a href="/places/" class="hover:text-white">沿岸景點</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <nav
+      class="fixed inset-x-3 bottom-3 z-50 grid h-[3.8rem] grid-cols-4 rounded-2xl border border-white/20 bg-deep/94 px-1 text-white shadow-2xl backdrop-blur-xl md:hidden"
+      aria-label="旅途中快速操作"
+    >
+      <a href="/map/" class="grid place-items-center rounded-xl text-xs font-bold no-underline"><span>⌖<br />地圖</span></a>
+      <a href="/boats/" class="grid place-items-center rounded-xl text-xs font-bold no-underline"><span>≋<br />遊船</span></a>
+      <a href="/itineraries/2-hour/" class="grid place-items-center rounded-xl text-xs font-bold no-underline"><span>◷<br />行程</span></a>
+      <a href="https://maps.app.goo.gl/YBjn4B8MgUa51vNj9" class="grid place-items-center rounded-xl text-xs font-bold no-underline" target="_blank" rel="noopener"><span>↗<br />導航</span></a>
+    </nav>
+    <script>
+      const trigger = document.querySelector("[data-menu-trigger]");
+      const menu = document.querySelector("[data-mobile-menu]");
+      trigger?.addEventListener("click", () => {
+        const isOpen = trigger.getAttribute("aria-expanded") === "true";
+        trigger.setAttribute("aria-expanded", String(!isOpen));
+        menu?.classList.toggle("hidden");
+      });
+    </script>
+  </body>
+</html>

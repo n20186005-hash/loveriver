@@ -1,0 +1,36 @@
+---
+interface Props {
+  compact?: boolean;
+  light?: boolean;
+}
+const { compact = false, light = false } = Astro.props;
+---
+
+<a class="group flex items-center gap-2.5 no-underline" href="/" aria-label="LOVE RIVER 高雄愛河指南－首頁">
+  <svg
+    aria-hidden="true"
+    class="h-9 w-9 shrink-0"
+    viewBox="0 0 44 44"
+    fill="none"
+  >
+    <path
+      d="M8 13.8C12.2 7.6 21 8.9 22 15.5c1-6.6 9.8-7.9 14-1.7 5.1 7.6-4.8 15.9-14 22-9.2-6.1-19.1-14.4-14-22Z"
+      stroke={light ? "#F6F1E7" : "#12677A"}
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+    <path d="M7 25c7-4 13 4 20 0 4-2.2 7-1.1 10 1" stroke="#E9B861" stroke-width="3" stroke-linecap="round" />
+  </svg>
+  {
+    !compact && (
+      <span class="leading-none">
+        <span class:list={["block text-[0.94rem] font-extrabold tracking-[0.12em]", light ? "text-white" : "text-navy"]}>
+          LOVE RIVER
+        </span>
+        <span class:list={["mt-1 block text-[0.68rem] font-bold tracking-[0.18em]", light ? "text-white/65" : "text-ink/55"]}>
+          高雄愛河指南
+        </span>
+      </span>
+    )
+  }
+</a>

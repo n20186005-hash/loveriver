@@ -1,0 +1,256 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #12263a;
+  --color-navy: #09263a;
+  --color-deep: #061b2a;
+  --color-river: #12677a;
+  --color-river-light: #dff1f0;
+  --color-sand: #f6f1e7;
+  --color-cream: #fbf8f1;
+  --color-gold: #e9b861;
+  --color-coral: #ad4738;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
+    "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-cream);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 8% 12%, rgb(28 127 150 / 0.06), transparent 28rem),
+    var(--color-cream);
+}
+
+body,
+button,
+a {
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-underline-offset: 0.2em;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+::selection {
+  color: white;
+  background: var(--color-river);
+}
+
+.site-shell {
+  width: min(100% - 2rem, 76rem);
+  margin-inline: auto;
+}
+
+.section-pad {
+  padding-block: clamp(4.5rem, 8vw, 8rem);
+}
+
+.display-title {
+  max-width: 14ch;
+  font-size: clamp(2.55rem, 7vw, 5.7rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.section-title {
+  max-width: 18ch;
+  font-size: clamp(2rem, 4.5vw, 3.65rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.06;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-light {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 999px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.92rem;
+  font-weight: 750;
+  flex-shrink: 0;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.btn-primary {
+  color: white;
+  background: var(--color-coral);
+}
+
+.btn-primary:hover {
+  background: #933a2e;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  border: 1px solid rgb(9 38 58 / 0.18);
+  color: var(--color-navy);
+  background: rgb(255 255 255 / 0.65);
+}
+
+.btn-secondary:hover {
+  background: white;
+  transform: translateY(-2px);
+}
+
+.btn-light {
+  color: var(--color-navy);
+  background: white;
+}
+
+.btn-light:hover {
+  color: white;
+  background: var(--color-river);
+  transform: translateY(-2px);
+}
+
+.card {
+  border: 1px solid rgb(9 38 58 / 0.1);
+  border-radius: 1.5rem;
+  background: rgb(255 255 255 / 0.76);
+  box-shadow: 0 1.5rem 4rem rgb(6 27 42 / 0.06);
+}
+
+.content {
+  color: #30495b;
+  font-size: 1.05rem;
+  line-height: 1.9;
+}
+
+.content > * {
+  max-width: 46rem;
+}
+
+.content h2,
+.content h3 {
+  color: var(--color-navy);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+}
+
+.content h2 {
+  margin-top: 3.5rem;
+  margin-bottom: 1rem;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+.content h3 {
+  margin-top: 2.2rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.25rem;
+}
+
+.content p,
+.content ul,
+.content ol,
+.content blockquote {
+  margin-block: 1.15rem;
+}
+
+.content ul,
+.content ol {
+  padding-left: 1.3rem;
+}
+
+.content li {
+  margin-block: 0.45rem;
+}
+
+.content a {
+  color: var(--color-river);
+  font-weight: 700;
+}
+
+.content strong {
+  color: var(--color-navy);
+}
+
+.content blockquote {
+  border-left: 3px solid var(--color-gold);
+  border-radius: 0 1rem 1rem 0;
+  padding: 0.75rem 1.25rem;
+  color: var(--color-navy);
+  background: var(--color-sand);
+}
+
+.content table {
+  width: 100%;
+  margin-block: 1.5rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.content th,
+.content td {
+  border-bottom: 1px solid rgb(9 38 58 / 0.12);
+  padding: 0.9rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.content th {
+  color: var(--color-navy);
+  font-weight: 800;
+}
+
+@media (max-width: 47.99rem) {
+  .site-shell {
+    width: min(100% - 1.25rem, 76rem);
+  }
+
+  .section-pad {
+    padding-block: 4rem;
+  }
+
+  body {
+    padding-bottom: 4.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

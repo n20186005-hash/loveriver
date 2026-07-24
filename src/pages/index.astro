@@ -1,0 +1,308 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Picture from "../components/Picture.astro";
+import RiverMap from "../components/RiverMap.astro";
+import WeatherCard from "../components/WeatherCard.astro";
+
+const areas = [
+  {
+    number: "01",
+    title: "愛河市區段",
+    label: "第一次來，選這裡",
+    desc: "愛之船、貢多拉與最經典的河岸夜景，都集中在國賓站周邊。",
+    station: "前金站／鹽埕埔站",
+    image: "downtown",
+    alt: "高雄愛河市區段白天河景與遊船",
+    href: "/areas/downtown-love-river/",
+  },
+  {
+    number: "02",
+    title: "愛河灣",
+    label: "建築與夕陽",
+    desc: "高雄流行音樂中心、真愛碼頭、光榮碼頭串成最開闊的港灣散步線。",
+    station: "真愛碼頭站／光榮碼頭站",
+    image: "bay",
+    alt: "夕陽下的高雄流行音樂中心與愛河灣",
+    href: "/areas/love-river-bay/",
+  },
+  {
+    number: "03",
+    title: "愛河之心",
+    label: "生態與慢遊",
+    desc: "位在中上游的雙湖水岸，適合單車、慢跑與避開人潮的晚間散步。",
+    station: "輕軌 C24 愛河之心站",
+    image: "heart",
+    alt: "愛河之心夜間水岸與城市燈光",
+    href: "/areas/heart-of-love-river/",
+  },
+];
+
+const itineraries = [
+  { icon: "◷", title: "我只有 2 小時", desc: "從國賓站走到愛河灣，把夜景留在最後。", href: "/itineraries/2-hour/" },
+  { icon: "☼", title: "我有半天", desc: "鹽埕午餐、駁二、大港橋，再接港灣夕照。", href: "/itineraries/half-day/" },
+  { icon: "☾", title: "我想看夜景", desc: "藍調時刻、河面倒影與最順的拍照方向。", href: "/best-time-to-visit/" },
+  { icon: "♡", title: "兩人散步約會", desc: "少折返、氣氛好，保留一段遊船時間。", href: "/itineraries/couple/" },
+  { icon: "⌁", title: "帶小孩出遊", desc: "縮短步行，把輕軌與開闊草地排進路線。", href: "/itineraries/family/" },
+  { icon: "☂", title: "下雨天備案", desc: "用高流、駁二室內展館與捷運減少淋雨。", href: "/itineraries/rainy-day/" },
+];
+
+const featuredPlaces = [
+  { title: "高雄流行音樂中心", tag: "愛河灣地標", image: "bay", alt: "夕陽下的高雄流行音樂中心", href: "/places/kaohsiung-music-center/" },
+  { title: "大港橋", tag: "港灣散步", image: "dagang", alt: "高雄大港橋白天景觀", href: "/places/dagou-bridge/" },
+  { title: "駁二藝術特區", tag: "倉庫與展覽", image: "pier2", alt: "駁二藝術特區蓬萊倉庫群", href: "/places/pier-2-art-center/" },
+];
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TouristDestination",
+    name: "高雄愛河",
+    alternateName: "Love River Kaohsiung",
+    description: "高雄市代表性水岸景點，包含愛河市區段、愛河灣與愛河之心。",
+    url: "https://loveriver.org/",
+    touristType: ["自由行旅客", "親子旅客", "攝影旅客", "情侶"],
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 22.6252,
+      longitude: 120.2894,
+    },
+    containedInPlace: {
+      "@type": "City",
+      name: "高雄市",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "高雄愛河旅遊指南",
+    alternateName: "Love River Kaohsiung Guide",
+    url: "https://loveriver.org/",
+    inLanguage: "zh-Hant-TW",
+  },
+];
+---
+
+<BaseLayout
+  title="高雄愛河旅遊指南｜交通、夜景、遊船與一日遊"
+  description="高雄愛河怎麼玩？30 秒分清愛河市區段、愛河灣與愛河之心，整理愛之船、貢多拉、交通、夜景與 2 小時至一日遊路線。"
+  keywords={["高雄愛河", "愛河景點", "愛河一日遊", "愛河夜景", "愛之船", "愛河地圖"]}
+  schema={schema}
+>
+  <section class="relative isolate min-h-[calc(100svh-4.8rem)] overflow-hidden bg-deep text-white">
+    <Picture
+      name="hero"
+      alt="高雄愛河夜景、河岸建築與水面金色倒影"
+      width={1280}
+      height={851}
+      loading="eager"
+      fetchpriority="high"
+      class="absolute inset-0 h-full w-full object-cover object-center"
+    />
+    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,27,42,.96)_0%,rgba(6,27,42,.76)_43%,rgba(6,27,42,.22)_78%,rgba(6,27,42,.5)_100%)]"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(0deg,rgba(6,27,42,.78)_0%,transparent_42%)]"></div>
+    <div class="site-shell relative z-10 grid min-h-[calc(100svh-4.8rem)] items-end gap-12 pb-10 pt-24 lg:grid-cols-[1fr_22rem] lg:items-center lg:py-24">
+      <div>
+        <h1 class="display-title text-white">高雄愛河<br /><span class="font-medium italic text-river-light">旅遊指南</span></h1>
+        <p class="mt-7 max-w-xl text-base leading-8 text-white/72 sm:text-lg">
+          愛之船、夜景、交通、沿岸景點與一日遊路線，一次規劃完成。
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/map/" class="btn-primary">查看愛河地圖 <span aria-hidden="true">→</span></a>
+          <a href="/boats/cruise-comparison/" class="btn-light">比較兩種遊船</a>
+          <a href="/itineraries/2-hour/" class="rounded-full px-4 py-3 text-sm font-bold text-white underline decoration-white/30 hover:decoration-white">直接選行程</a>
+        </div>
+      </div>
+      <aside class="overflow-hidden rounded-3xl border border-white/15 bg-deep/55 shadow-2xl backdrop-blur-xl" aria-label="愛河快速資訊">
+        <div class="border-b border-white/10 px-6 py-5">
+          <p class="font-bold">出發前，先記住四件事</p>
+        </div>
+        <dl class="grid grid-cols-2">
+          <div class="border-b border-r border-white/10 p-5">
+            <dt class="text-xs text-white/68">河岸開放</dt>
+            <dd class="mt-2 text-sm font-extrabold">全天候</dd>
+          </div>
+          <div class="border-b border-white/10 p-5">
+            <dt class="text-xs text-white/68">最佳時間</dt>
+            <dd class="mt-2 text-sm font-extrabold">日落前抵達</dd>
+          </div>
+          <div class="border-r border-white/10 p-5">
+            <dt class="text-xs text-white/68">經典區域</dt>
+            <dd class="mt-2 text-sm font-extrabold">國賓站周邊</dd>
+          </div>
+          <div class="p-5">
+            <dt class="text-xs text-white/68">建議停留</dt>
+            <dd class="mt-2 text-sm font-extrabold">2 小時至半天</dd>
+          </div>
+        </dl>
+        <a href="/areas/love-river-vs-heart-vs-bay/" class="flex min-h-14 items-center justify-between bg-white px-6 text-sm font-extrabold text-navy no-underline">
+          三個「愛河」差在哪？
+          <span aria-hidden="true">↗</span>
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  <WeatherCard />
+
+  <section class="section-pad bg-cream">
+    <div class="site-shell">
+      <div class="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
+        <div>
+          <h2 class="section-title">別只搜「愛河」<br />先選對你要去的那一段</h2>
+        </div>
+        <p class="max-w-xl text-base leading-8 text-ink/75 lg:justify-self-end">
+          愛河市區段、愛河灣和愛河之心並不是同一個景點。三者相隔一段距離，最近車站與玩法也完全不同。
+        </p>
+      </div>
+      <div class="mt-12 grid gap-5 lg:grid-cols-3">
+        {
+          areas.map((area) => (
+            <a href={area.href} class="group overflow-hidden rounded-[1.7rem] bg-white text-ink no-underline shadow-[0_1.5rem_4rem_rgba(6,27,42,.08)]">
+              <div class="relative aspect-[4/3] overflow-hidden">
+                <Picture name={area.image} alt={area.alt} class="h-full w-full object-cover transition duration-700 group-hover:scale-105" width={1280} height={960} />
+                <span class="absolute left-5 top-5 rounded-full bg-deep/80 px-3 py-1.5 text-[0.67rem] font-extrabold tracking-[0.15em] text-white backdrop-blur">{area.number}</span>
+                <span class="absolute bottom-5 left-5 rounded-full bg-gold px-3 py-1.5 text-xs font-extrabold text-navy">{area.label}</span>
+              </div>
+              <div class="p-6">
+                <div class="flex items-start justify-between gap-4">
+                  <h3 class="text-2xl font-extrabold tracking-[-0.04em] text-navy">{area.title}</h3>
+                  <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-navy/12 text-river transition group-hover:bg-river group-hover:text-white">↗</span>
+                </div>
+                <p class="mt-3 text-sm leading-6 text-ink/72">{area.desc}</p>
+                <p class="mt-5 border-t border-navy/8 pt-4 text-xs font-bold text-river">⌖ {area.station}</p>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+      <div class="mt-8 text-center">
+        <a href="/areas/love-river-vs-heart-vs-bay/" class="btn-secondary">查看三區完整比較表 <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad bg-sand">
+    <div class="site-shell">
+      <div class="max-w-2xl">
+        <h2 class="section-title">今天有多少時間？<br />照你的步調直接出發</h2>
+        <p class="mt-5 text-base leading-8 text-ink/75">不用從長篇文章找重點。選一張卡，就會得到依時間排序的停留點、車站與轉場方式。</p>
+      </div>
+      <div class="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          itineraries.map((item) => (
+            <a href={item.href} class="group flex min-h-52 flex-col rounded-3xl border border-navy/8 bg-white p-6 text-ink no-underline transition hover:-translate-y-1 hover:shadow-xl">
+              <div class="flex items-center">
+                <span class="grid h-11 w-11 place-items-center rounded-2xl bg-river-light text-xl text-river">{item.icon}</span>
+              </div>
+              <h3 class="mt-7 text-xl font-extrabold tracking-[-0.03em] text-navy">{item.title}</h3>
+              <p class="mt-2 text-sm leading-6 text-ink/72">{item.desc}</p>
+              <span class="mt-auto pt-5 text-xs font-extrabold text-coral">查看路線 <span class="inline-block transition group-hover:translate-x-1">→</span></span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad bg-cream">
+    <div class="site-shell">
+      <div class="grid gap-12 lg:grid-cols-[0.7fr_1.3fr]">
+        <div>
+          <h2 class="section-title">愛之船，<br />還是貢多拉？</h2>
+          <p class="mt-5 max-w-sm text-base leading-8 text-ink/75">兩種都在愛河市區段，時間差不多；真正要選的是導覽效率或浪漫氛圍。</p>
+          <a href="/boats/cruise-comparison/" class="btn-primary mt-7">看完整比較表</a>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <article class="overflow-hidden rounded-[1.75rem] bg-navy text-white">
+            <div class="aspect-[4/3] overflow-hidden">
+              <Picture name="boat" alt="愛之船國賓站入口與綠蔭" class="h-full w-full object-cover" width={1280} height={853} />
+            </div>
+            <div class="p-6">
+              <div class="flex items-center justify-between gap-3">
+                <h3 class="text-2xl font-extrabold">愛之船</h3>
+                <span class="rounded-full bg-white/10 px-3 py-1 text-[0.65rem] font-bold text-gold">導覽觀光</span>
+              </div>
+              <dl class="mt-5 grid grid-cols-2 gap-4 border-t border-white/10 pt-5 text-xs">
+                <div><dt class="text-white/68">適合</dt><dd class="mt-1 font-bold">初訪、家庭</dd></div>
+                <div><dt class="text-white/68">航程</dt><dd class="mt-1 font-bold">約 25 分鐘</dd></div>
+              </dl>
+              <a href="/boats/love-boat/" class="mt-6 inline-flex text-sm font-extrabold text-gold no-underline">查看乘船指南 →</a>
+            </div>
+          </article>
+          <article class="overflow-hidden rounded-[1.75rem] bg-white shadow-xl">
+            <div class="aspect-[4/3] overflow-hidden">
+              <Picture name="gondola" alt="夜間航行於愛河上的貢多拉船" class="h-full w-full object-cover" width={1280} height={960} />
+            </div>
+            <div class="p-6">
+              <div class="flex items-center justify-between gap-3">
+                <h3 class="text-2xl font-extrabold text-navy">貢多拉</h3>
+                <span class="rounded-full bg-coral/10 px-3 py-1 text-[0.65rem] font-bold text-coral">浪漫體驗</span>
+              </div>
+              <dl class="mt-5 grid grid-cols-2 gap-4 border-t border-navy/8 pt-5 text-xs">
+                <div><dt class="text-ink/68">適合</dt><dd class="mt-1 font-bold text-navy">情侶、紀念日</dd></div>
+                <div><dt class="text-ink/68">航程</dt><dd class="mt-1 font-bold text-navy">約 25 分鐘</dd></div>
+              </dl>
+              <a href="/boats/gondola/" class="mt-6 inline-flex text-sm font-extrabold text-coral no-underline">查看乘船指南 →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="mt-7 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gold/30 bg-gold/10 px-5 py-4 text-xs leading-5 text-ink/65">
+        <p>臨時停航、售票與節慶航次以營運單位當日公告為準。</p>
+        <a href="/boats/" class="font-extrabold text-river">查看遊船資訊 ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad bg-river-light">
+    <div class="site-shell">
+      <div class="mb-10 grid gap-6 lg:grid-cols-[1fr_0.8fr] lg:items-end">
+        <div>
+          <h2 class="section-title">沿著水流看懂<br />三個區域的相對位置</h2>
+        </div>
+        <p class="max-w-lg text-base leading-8 text-ink/75 lg:justify-self-end">愛河之心在北、市區遊船段居中、愛河灣接高雄港。先看方向，再決定搭捷運還是輕軌。</p>
+      </div>
+      <RiverMap compact />
+    </div>
+  </section>
+
+  <section class="section-pad bg-cream">
+    <div class="site-shell">
+      <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+        <div>
+          <h2 class="section-title">沿岸順遊，不走回頭路</h2>
+        </div>
+        <a href="/places/" class="btn-secondary self-start">全部沿岸景點</a>
+      </div>
+      <div class="mt-10 grid gap-5 md:grid-cols-3">
+        {
+          featuredPlaces.map((place) => (
+            <a href={place.href} class="group relative aspect-[4/5] overflow-hidden rounded-[1.7rem] bg-deep text-white no-underline">
+              <Picture name={place.image} alt={place.alt} class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" width={1280} height={960} />
+              <div class="absolute inset-0 bg-gradient-to-t from-deep via-deep/10 to-transparent"></div>
+              <div class="absolute inset-x-0 bottom-0 p-6">
+                <p class="text-[0.68rem] font-extrabold tracking-[0.16em] text-gold">{place.tag}</p>
+                <div class="mt-2 flex items-end justify-between gap-4">
+                  <h3 class="text-2xl font-extrabold tracking-[-0.03em]">{place.title}</h3>
+                  <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-navy transition group-hover:bg-gold">↗</span>
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-gold py-14">
+    <div class="site-shell grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+      <div>
+        <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-navy sm:text-4xl">第一次來？從市區段開始最不容易出錯。</h2>
+      </div>
+      <div class="flex flex-wrap gap-3 lg:justify-end">
+        <a href="/guide/" class="btn-light">讀完整攻略</a>
+        <a href="/transport/" class="btn-secondary !border-navy/20 !bg-transparent">看交通方式</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
