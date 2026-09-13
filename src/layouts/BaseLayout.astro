@@ -1,6 +1,11 @@
 ---
 import "../styles/global.css";
 import Logo from "../components/Logo.astro";
+import GoogleRating from "../components/GoogleRating.astro";
+import { site, attraction, buildAttractionSchema, attractionEntityId } from "../data/site";
+
+type Locale = "zh-Hant-TW" | "en";
+type Alternate = { hreflang: string; href: string };
 
 interface Props {
   title: string;
@@ -10,80 +15,230 @@ interface Props {
   keywords?: string[];
   pageType?: "website" | "article";
   schema?: Record<string, unknown> | Record<string, unknown>[];
+  /** 頁面語系，同時決定 <html lang>、OG locale 與站內導覽語言。 */
+  lang?: Locale;
+  /** 其他語系的對應網址；未提供時只輸出自身語系與 x-default。 */
+  alternates?: Alternate[];
+  /** 語言切換連結；沒有對應譯頁時不顯示切換鈕。 */
+  langSwitch?: { href: string; label: string };
 }
 
 const {
   title,
   description,
   image = "/images/hero-1280.webp",
-  imageAlt = "高雄愛河夜景與河面倒影",
-  keywords = ["高雄愛河", "愛河景點", "愛河夜景", "高雄旅遊"],
+  imageAlt = `${attraction.fullName} ${attraction.localizedName} - Main view in ${attraction.cityName}, ${attraction.countryName}`,
+  keywords,
   pageType = "website",
   schema,
+  lang = "zh-Hant-TW",
+  alternates,
+  langSwitch,
 } = Astro.props;
 
-const isHome = Astro.url.pathname === "/";
-const fullTitle = isHome ? title : `${title}｜高雄愛河旅遊指南`;
+const isEn = lang === "en";
+const siteSuffix = isEn ? site.nameEn : site.name;
+
+const t = isEn
+  ? {
+      appName: site.nameEn,
+      appShortName: "Love River",
+      skipToContent: "Skip to content",
+      mainNavLabel: "Main navigation",
+      mobileNavLabel: "Mobile navigation",
+      openMenu: "Open menu",
+      startHere: "Start here",
+      startHereHref: "/en/",
+      tagline:
+        "Decide which part of Love River to visit, which station to get off at, and how to fit in a boat ride before you leave.",
+      quickLinks: "English pages",
+      popularAreas: "Full guide (Chinese)",
+      sources: "Sources & updates",
+      disclaimer:
+        "An independent travel guide, not affiliated with the Kaohsiung City Government or the official Love Boat ticketing service. Details follow official announcements and the Google Maps place page.",
+      sourcesLink: "Sources & image credits",
+      faqLink: "FAQ",
+      mapsLink: "Google Maps place ↗",
+      bottomNavLabel: "Quick actions",
+    }
+  : {
+      appName: site.name,
+      appShortName: "愛河指南",
+      skipToContent: "跳至主要內容",
+      mainNavLabel: "主要導覽",
+      mobileNavLabel: "行動版導覽",
+      openMenu: "開啟選單",
+      startHere: "第一次來先看",
+      startHereHref: "/areas/love-river-vs-heart-vs-bay/",
+      tagline: "從愛河之心到愛河灣，幫你在出發前快速選對區域、車站、遊船與散步路線。",
+      quickLinks: "快速入口",
+      popularAreas: "熱門區域",
+      sources: "資料來源與更新",
+      disclaimer:
+        "本站為獨立旅遊指南，並非高雄市政府、觀光局或愛之船官方售票網站。景點資訊以官方公告與 Google Maps 地點頁為主要來源。",
+      sourcesLink: "資料來源與圖片授權",
+      faqLink: "常見問題",
+      mapsLink: "Google Maps 地點頁 ↗",
+      bottomNavLabel: "旅途中快速操作",
+    };
+
+const resolvedKeywords =
+  keywords ??
+  (isEn
+    ? ["Love River Kaohsiung", "Love River Taiwan", "Kaohsiung MRT", "Kaohsiung itinerary"]
+    : ["高雄愛河", "Love River 愛河", "愛河景點", "愛河夜景", "高雄旅遊"]);
+
+const isHome = Astro.url.pathname === "/" || Astro.url.pathname === "/en/";
+/**
+ * 標題過長時不再附加站名：Google 搜尋結果大約只顯示 30 個全形字，
+ * 硬加站名會把頁面本身的主要關鍵字擠掉。
+ */
+const SITE_SUFFIX_MAX = 26;
+const fullTitle = isHome || title.length > SITE_SUFFIX_MAX ? title : `${title}｜${siteSuffix}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 const preloadImage = image.replace(/\.webp$/, ".avif");
-const defaultSchema = [
+
+const linkAlternates: Alternate[] = alternates ?? [
+  { hreflang: lang, href: canonical.href },
+  { hreflang: "x-default", href: canonical.href },
+];
+
+// 全站固定輸出的地理實體綁定（模板 1）：TouristAttraction + WebSite + Organization
+const baseSchema: Record<string, unknown>[] = [
+  buildAttractionSchema(),
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "高雄愛河旅遊指南",
-    alternateName: "Love River Kaohsiung Guide",
-    url: "https://loveriver.org/",
-    inLanguage: "zh-Hant-TW",
-    description: "從愛河之心到愛河灣，提供分區、交通、遊船與行程資訊的高雄水岸旅遊指南。",
+    "@id": `${site.url}#website`,
+    name: site.name,
+    alternateName: site.nameEn,
+    url: site.url,
+    inLanguage: site.locale,
+    description: site.tagline,
+    publisher: { "@id": `${site.url}#organization` },
+    about: { "@id": attractionEntityId },
   },
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "高雄愛河旅遊指南",
-    url: "https://loveriver.org/",
-    logo: "https://loveriver.org/favicon.svg",
+    "@id": `${site.url}#organization`,
+    name: site.name,
+    alternateName: site.nameEn,
+    url: site.url,
+    logo: `${site.url}favicon.svg`,
   },
 ];
-const jsonLd = schema ? (Array.isArray(schema) ? schema : [schema]) : defaultSchema;
+const pageSchema = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+const jsonLd = [...baseSchema, ...pageSchema];
 
-const mainNav = [
+const zhNav = [
   { href: "/map/", label: "愛河地圖" },
   { href: "/boats/", label: "愛河遊船" },
   { href: "/itineraries/2-hour/", label: "行程路線" },
   { href: "/places/", label: "沿岸景點" },
+  { href: "/facilities/", label: "訪客設施" },
   { href: "/food/", label: "美食住宿" },
   { href: "/events/", label: "活動情報" },
 ];
+
+// 英文版目前只涵蓋三個最高意圖的主題，導覽也維持精簡，避免連到中文頁造成混亂。
+const enNav = [
+  { href: "/en/", label: "Guide" },
+  { href: "/en/transport/", label: "Getting there" },
+  { href: "/en/boats/cruise-comparison/", label: "Boats" },
+];
+
+const mainNav = isEn ? enNav : zhNav;
+
+/**
+ * 導覽項目的當前頁判斷。根目錄（`/`、`/en/`）必須完全相符，
+ * 否則所有子頁面都會因為前綴比對而被同時標成當前頁。
+ */
+const isCurrent = (href: string) =>
+  href === "/" || href === "/en/" ? Astro.url.pathname === href : Astro.url.pathname.startsWith(href);
+
+const footerPrimary = isEn
+  ? [
+      { href: "/en/", label: "Love River guide" },
+      { href: "/en/transport/", label: "MRT & Light Rail" },
+      { href: "/en/boats/cruise-comparison/", label: "Love Boat vs Gondola" },
+    ]
+  : [
+      { href: "/guide/", label: "高雄愛河完整攻略" },
+      { href: "/transport/", label: "捷運、輕軌與停車" },
+      { href: "/boats/cruise-comparison/", label: "愛之船與貢多拉比較" },
+      { href: "/facilities/", label: "訪客服務與周邊設施" },
+      { href: "/stewardship/", label: "科普與訪客責任" },
+      { href: "/faq/", label: "常見問題" },
+    ];
+
+const footerSecondary = isEn
+  ? [
+      { href: "/", label: "高雄愛河旅遊指南" },
+      { href: "/transport/", label: "捷運、輕軌與停車" },
+      { href: "/faq/", label: "常見問題" },
+    ]
+  : [
+      { href: "/areas/downtown-love-river/", label: "愛河市區段" },
+      { href: "/areas/love-river-bay/", label: "愛河灣" },
+      { href: "/areas/heart-of-love-river/", label: "愛河之心" },
+      { href: "/places/", label: "沿岸景點" },
+    ];
+
+// 導航一律使用同一組 directions 連結，避免出現兩個不同的 Google Maps 短網址。
+const bottomNav = isEn
+  ? [
+      { href: "/en/", label: "Guide", icon: "⌖" },
+      { href: "/en/transport/", label: "MRT", icon: "◷" },
+      { href: "/en/boats/cruise-comparison/", label: "Boats", icon: "≋" },
+      { href: attraction.mapsDirectionsUrl, label: "Go", icon: "↗", external: true },
+    ]
+  : [
+      { href: "/map/", label: "地圖", icon: "⌖" },
+      { href: "/boats/", label: "遊船", icon: "≋" },
+      { href: "/itineraries/2-hour/", label: "行程", icon: "◷" },
+      { href: attraction.mapsDirectionsUrl, label: "導航", icon: "↗", external: true },
+    ];
 ---
 
 <!doctype html>
-<html lang="zh-Hant-TW">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content={keywords.join(",")} />
+    <meta name="keywords" content={resolvedKeywords.join(",")} />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-    <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="zh-Hant" href={canonical} />
-    <link rel="alternate" hreflang="x-default" href={canonical} />
+    <link rel="canonical" href={canonical.href} />
+    {
+      linkAlternates.map((alt) => (
+        <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+      ))
+    }
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" sizes="180x180" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content={t.appShortName} />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content={t.appName} />
     <link rel="preload" as="image" href={preloadImage} type="image/avif" fetchpriority="high" />
-    <meta property="og:locale" content="zh_TW" />
+    <meta property="og:locale" content={isEn ? "en_US" : site.ogLocale} />
     <meta property="og:type" content={pageType} />
-    <meta property="og:site_name" content="高雄愛河旅遊指南" />
+    <meta property="og:site_name" content={t.appName} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage.href} />
     <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImage.href} />
     <meta name="theme-color" content="#09263a" />
     <!-- Google Analytics -->
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
@@ -105,17 +260,17 @@ const mainNav = [
       href="#main-content"
       class="fixed left-3 top-3 z-[100] -translate-y-24 rounded-full bg-white px-4 py-3 font-bold text-navy shadow-xl transition-transform focus:translate-y-0"
     >
-      跳至主要內容
+      {t.skipToContent}
     </a>
     <header class="sticky top-0 z-50 border-b border-navy/8 bg-cream/92 backdrop-blur-xl">
       <div class="site-shell flex h-[4.8rem] items-center justify-between">
         <Logo />
-        <nav class="hidden items-center gap-1 lg:flex" aria-label="主要導覽">
+        <nav class="hidden items-center gap-1 lg:flex" aria-label={t.mainNavLabel}>
           {
             mainNav.map((item) => (
               <a
                 href={item.href}
-                aria-current={Astro.url.pathname.startsWith(item.href) ? "page" : undefined}
+                aria-current={isCurrent(item.href) ? "page" : undefined}
                 class="rounded-full px-3.5 py-2.5 text-[0.86rem] font-bold text-navy/68 no-underline transition hover:bg-white hover:text-navy aria-[current=page]:bg-river-light aria-[current=page]:text-river"
               >
                 {item.label}
@@ -123,16 +278,27 @@ const mainNav = [
             ))
           }
         </nav>
-        <div class="hidden xl:block">
-          <a href="/areas/love-river-vs-heart-vs-bay/" class="btn-secondary">
-            第一次來先看
+        <div class="hidden items-center gap-2 xl:flex">
+          {
+            langSwitch && (
+              <a
+                href={langSwitch.href}
+                hreflang={isEn ? "zh-Hant-TW" : "en"}
+                class="rounded-full border border-navy/12 px-3.5 py-2 text-[0.82rem] font-extrabold text-navy/75 no-underline transition hover:bg-white hover:text-navy"
+              >
+                {langSwitch.label}
+              </a>
+            )
+          }
+          <a href={t.startHereHref} class="btn-secondary">
+            {t.startHere}
             <span aria-hidden="true">↗</span>
           </a>
         </div>
         <button
           class="grid h-11 w-11 place-items-center rounded-full border border-navy/12 bg-white lg:hidden"
           type="button"
-          aria-label="開啟選單"
+          aria-label={t.openMenu}
           aria-expanded="false"
           aria-controls="mobile-menu"
           data-menu-trigger
@@ -140,15 +306,40 @@ const mainNav = [
           <span class="text-xl" aria-hidden="true">☰</span>
         </button>
       </div>
-      <nav id="mobile-menu" class="site-shell hidden border-t border-navy/8 py-3 lg:hidden" aria-label="行動版導覽" data-mobile-menu>
+      <nav
+        id="mobile-menu"
+        class="site-shell hidden border-t border-navy/8 py-3 lg:hidden"
+        aria-label={t.mobileNavLabel}
+        data-mobile-menu
+      >
         <div class="grid grid-cols-2 gap-1">
           {
             mainNav.map((item) => (
-              <a href={item.href} class="rounded-xl px-3 py-3 text-sm font-bold text-navy no-underline hover:bg-river-light">
+              <a
+                href={item.href}
+                class="rounded-xl px-3 py-3 text-sm font-bold text-navy no-underline hover:bg-river-light"
+              >
                 {item.label}
               </a>
             ))
           }
+          {
+            langSwitch && (
+              <a
+                href={langSwitch.href}
+                hreflang={isEn ? "zh-Hant-TW" : "en"}
+                class="rounded-xl border border-navy/10 px-3 py-3 text-sm font-extrabold text-river no-underline hover:bg-river-light"
+              >
+                {langSwitch.label}
+              </a>
+            )
+          }
+          <a
+            href={t.startHereHref}
+            class="rounded-xl bg-navy px-3 py-3 text-sm font-extrabold text-white no-underline"
+          >
+            {t.startHere}
+          </a>
         </div>
       </nav>
     </header>
@@ -159,38 +350,70 @@ const mainNav = [
       <div class="site-shell grid gap-12 md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
           <Logo light />
-          <p class="mt-5 max-w-sm text-sm leading-7 text-white/72">
-            從愛河之心到愛河灣，幫你在出發前快速選對區域、車站、遊船與散步路線。
-          </p>
+          <p class="mt-5 max-w-sm text-sm leading-7 text-white/72">{t.tagline}</p>
         </div>
         <div>
-          <p class="text-xs font-extrabold tracking-[0.18em] text-gold">快速入口</p>
+          <p class="text-xs font-extrabold tracking-[0.18em] text-gold">{t.quickLinks}</p>
           <div class="mt-4 grid gap-2 text-sm text-white/78">
-            <a href="/guide/" class="hover:text-white">高雄愛河完整攻略</a>
-            <a href="/transport/" class="hover:text-white">捷運、輕軌與停車</a>
-            <a href="/boats/cruise-comparison/" class="hover:text-white">愛之船與貢多拉比較</a>
-            <a href="/faq/" class="hover:text-white">常見問題</a>
+            {
+              footerPrimary.map((item) => (
+                <a href={item.href} class="hover:text-white">
+                  {item.label}
+                </a>
+              ))
+            }
           </div>
         </div>
         <div>
-          <p class="text-xs font-extrabold tracking-[0.18em] text-gold">熱門區域</p>
+          <p class="text-xs font-extrabold tracking-[0.18em] text-gold">{t.popularAreas}</p>
           <div class="mt-4 grid gap-2 text-sm text-white/78">
-            <a href="/areas/downtown-love-river/" class="hover:text-white">愛河市區段</a>
-            <a href="/areas/love-river-bay/" class="hover:text-white">愛河灣</a>
-            <a href="/areas/heart-of-love-river/" class="hover:text-white">愛河之心</a>
-            <a href="/places/" class="hover:text-white">沿岸景點</a>
+            {
+              footerSecondary.map((item) => (
+                <a href={item.href} class="hover:text-white">
+                  {item.label}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+      <div class="site-shell mt-12 grid gap-8 border-t border-white/10 pt-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+        <GoogleRating variant="footer" showAddress={false} lang={lang} />
+        <div>
+          <p class="text-xs font-extrabold tracking-[0.18em] text-gold">{t.sources}</p>
+          <p class="mt-3 text-sm leading-7 text-white/72">{t.disclaimer}</p>
+          <div class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm font-bold text-white/82">
+            <a href="/sources/" class="hover:text-white">{t.sourcesLink}</a>
+            <a href="/faq/" class="hover:text-white">{t.faqLink}</a>
+            <a
+              href={attraction.mapsShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-white">{t.mapsLink}</a>
           </div>
         </div>
       </div>
     </footer>
     <nav
       class="fixed inset-x-3 bottom-3 z-50 grid h-[3.8rem] grid-cols-4 rounded-2xl border border-white/20 bg-deep/94 px-1 text-white shadow-2xl backdrop-blur-xl md:hidden"
-      aria-label="旅途中快速操作"
+      aria-label={t.bottomNavLabel}
     >
-      <a href="/map/" class="grid place-items-center rounded-xl text-xs font-bold no-underline"><span>⌖<br />地圖</span></a>
-      <a href="/boats/" class="grid place-items-center rounded-xl text-xs font-bold no-underline"><span>≋<br />遊船</span></a>
-      <a href="/itineraries/2-hour/" class="grid place-items-center rounded-xl text-xs font-bold no-underline"><span>◷<br />行程</span></a>
-      <a href="https://maps.app.goo.gl/YBjn4B8MgUa51vNj9" class="grid place-items-center rounded-xl text-xs font-bold no-underline" target="_blank" rel="noopener"><span>↗<br />導航</span></a>
+      {
+        bottomNav.map((item) => (
+          <a
+            href={item.href}
+            class="grid place-items-center rounded-xl text-center text-xs font-bold no-underline"
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener" : undefined}
+          >
+            <span>
+              {item.icon}
+              <br />
+              {item.label}
+            </span>
+          </a>
+        ))
+      }
     </nav>
     <script>
       const trigger = document.querySelector("[data-menu-trigger]");
@@ -200,6 +423,17 @@ const mainNav = [
         trigger.setAttribute("aria-expanded", String(!isOpen));
         menu?.classList.toggle("hidden");
       });
+    </script>
+    <script is:inline>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js", { scope: "/" })
+            .catch(() => {
+              /* PWA 為漸進增強，註冊失敗不影響瀏覽 */
+            });
+        });
+      }
     </script>
   </body>
 </html>

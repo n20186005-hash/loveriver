@@ -2,7 +2,20 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Picture from "../components/Picture.astro";
 import RiverMap from "../components/RiverMap.astro";
-import WeatherCard from "../components/WeatherCard.astro";
+import LiveWeather from "../components/LiveWeather.astro";
+import WeatherSkeleton from "../components/WeatherSkeleton.astro";
+import SeasonalStrategy from "../components/SeasonalStrategy.astro";
+import AudienceRoutes from "../components/AudienceRoutes.astro";
+import VisitorFacilities from "../components/VisitorFacilities.astro";
+import Stewardship from "../components/Stewardship.astro";
+import GoogleRating from "../components/GoogleRating.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import FaqSection from "../components/FaqSection.astro";
+import SourcesSection from "../components/SourcesSection.astro";
+import { site, attraction, entityIntro, entityNearby, entityHierarchy, attractionEntityId } from "../data/site";
+
+/** 產生絕對網址，供結構化資料與 hreflang 使用。 */
+const abs = (path: string) => new URL(path, site.url).href;
 
 const areas = [
   {
@@ -12,7 +25,7 @@ const areas = [
     desc: "愛之船、貢多拉與最經典的河岸夜景，都集中在國賓站周邊。",
     station: "前金站／鹽埕埔站",
     image: "downtown",
-    alt: "高雄愛河市區段白天河景與遊船",
+    alt: "Love River 愛河 - 高雄愛河市區段白天河景與遊船",
     href: "/areas/downtown-love-river/",
   },
   {
@@ -22,7 +35,7 @@ const areas = [
     desc: "高雄流行音樂中心、真愛碼頭、光榮碼頭串成最開闊的港灣散步線。",
     station: "真愛碼頭站／光榮碼頭站",
     image: "bay",
-    alt: "夕陽下的高雄流行音樂中心與愛河灣",
+    alt: "Love River 愛河灣 - 夕陽下的高雄流行音樂中心與港灣",
     href: "/areas/love-river-bay/",
   },
   {
@@ -32,7 +45,7 @@ const areas = [
     desc: "位在中上游的雙湖水岸，適合單車、慢跑與避開人潮的晚間散步。",
     station: "輕軌 C24 愛河之心站",
     image: "heart",
-    alt: "愛河之心夜間水岸與城市燈光",
+    alt: "Heart of Love River 愛河之心 - 夜間水岸與城市燈光",
     href: "/areas/heart-of-love-river/",
   },
 ];
@@ -47,51 +60,65 @@ const itineraries = [
 ];
 
 const featuredPlaces = [
-  { title: "高雄流行音樂中心", tag: "愛河灣地標", image: "bay", alt: "夕陽下的高雄流行音樂中心", href: "/places/kaohsiung-music-center/" },
-  { title: "大港橋", tag: "港灣散步", image: "dagang", alt: "高雄大港橋白天景觀", href: "/places/dagou-bridge/" },
-  { title: "駁二藝術特區", tag: "倉庫與展覽", image: "pier2", alt: "駁二藝術特區蓬萊倉庫群", href: "/places/pier-2-art-center/" },
+  { title: "高雄流行音樂中心", tag: "愛河灣地標", image: "bay", alt: "高雄流行音樂中心 near Love River 愛河", href: "/places/kaohsiung-music-center/" },
+  { title: "大港橋", tag: "港灣散步", image: "dagang", alt: "大港橋 near Love River 愛河灣", href: "/places/dagou-bridge/" },
+  { title: "駁二藝術特區", tag: "倉庫與展覽", image: "pier2", alt: "駁二藝術特區 near Love River 愛河", href: "/places/pier-2-art-center/" },
 ];
 
 const schema = [
   {
     "@context": "https://schema.org",
     "@type": "TouristDestination",
+    "@id": "https://loveriver.org/#destination",
     name: "高雄愛河",
-    alternateName: "Love River Kaohsiung",
+    alternateName: ["Love River", "Love River Kaohsiung"],
     description: "高雄市代表性水岸景點，包含愛河市區段、愛河灣與愛河之心。",
     url: "https://loveriver.org/",
     touristType: ["自由行旅客", "親子旅客", "攝影旅客", "情侶"],
     geo: {
       "@type": "GeoCoordinates",
-      latitude: 22.6252,
-      longitude: 120.2894,
+      latitude: attraction.latitude,
+      longitude: attraction.longitude,
     },
+    containsPlace: { "@id": attractionEntityId },
     containedInPlace: {
       "@type": "City",
-      name: "高雄市",
+      name: attraction.cityNameZh,
     },
   },
   {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "高雄愛河旅遊指南",
-    alternateName: "Love River Kaohsiung Guide",
-    url: "https://loveriver.org/",
-    inLanguage: "zh-Hant-TW",
+    "@type": "ItemList",
+    name: "愛河三大區域",
+    itemListElement: areas.map((area, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: area.title,
+      url: abs(area.href),
+    })),
   },
+];
+
+// 首頁與 /en/ 是同一主題的兩個語言版本，雙向輸出 hreflang。
+const alternates = [
+  { hreflang: "zh-Hant-TW", href: abs("/") },
+  { hreflang: "en", href: abs("/en/") },
+  { hreflang: "x-default", href: abs("/") },
 ];
 ---
 
 <BaseLayout
-  title="高雄愛河旅遊指南｜交通、夜景、遊船與一日遊"
-  description="高雄愛河怎麼玩？30 秒分清愛河市區段、愛河灣與愛河之心，整理愛之船、貢多拉、交通、夜景與 2 小時至一日遊路線。"
-  keywords={["高雄愛河", "愛河景點", "愛河一日遊", "愛河夜景", "愛之船", "愛河地圖"]}
+  title="Love River 愛河（高雄）旅遊指南｜交通、夜景、遊船與一日遊"
+  description="Love River（愛河）位於高雄市前金區，是高雄最具代表性的水岸景點。30 秒分清愛河市區段、愛河灣與愛河之心，整理愛之船、貢多拉、交通、夜景與 2 小時至一日遊路線。"
+  keywords={["Love River 愛河", "高雄愛河", "愛河景點", "愛河一日遊", "愛河夜景", "愛之船", "愛河地圖"]}
   schema={schema}
+  alternates={alternates}
+  langSwitch={{ href: "/en/", label: "EN" }}
 >
   <section class="relative isolate min-h-[calc(100svh-4.8rem)] overflow-hidden bg-deep text-white">
     <Picture
       name="hero"
-      alt="高雄愛河夜景、河岸建築與水面金色倒影"
+      alt="Love River 愛河 - Main view in Kaohsiung, Taiwan（高雄愛河夜景、河岸建築與水面金色倒影）"
       width={1280}
       height={851}
       loading="eager"
@@ -102,13 +129,20 @@ const schema = [
     <div class="absolute inset-0 bg-[linear-gradient(0deg,rgba(6,27,42,.78)_0%,transparent_42%)]"></div>
     <div class="site-shell relative z-10 grid min-h-[calc(100svh-4.8rem)] items-end gap-12 pb-10 pt-24 lg:grid-cols-[1fr_22rem] lg:items-center lg:py-24">
       <div>
-        <h1 class="display-title text-white">高雄愛河<br /><span class="font-medium italic text-river-light">旅遊指南</span></h1>
+        <p class="text-[0.72rem] font-extrabold tracking-[0.22em] text-gold">
+          Love River · 愛河 · Kaohsiung, Taiwan
+        </p>
+        <h1 class="display-title mt-4 text-white">高雄愛河<br /><span class="font-medium italic text-river-light">旅遊指南</span></h1>
         <p class="mt-7 max-w-xl text-base leading-8 text-white/72 sm:text-lg">
           愛之船、夜景、交通、沿岸景點與一日遊路線，一次規劃完成。
+        </p>
+        <p class="mt-4 max-w-xl text-sm leading-7 text-white/62">
+          {entityIntro}
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
           <a href="/map/" class="btn-primary">查看愛河地圖 <span aria-hidden="true">→</span></a>
           <a href="/boats/cruise-comparison/" class="btn-light">比較兩種遊船</a>
+          <a href="/transport/" class="rounded-full px-4 py-3 text-sm font-bold text-white underline decoration-white/30 hover:decoration-white">愛河捷運哪一站？</a>
           <a href="/itineraries/2-hour/" class="rounded-full px-4 py-3 text-sm font-bold text-white underline decoration-white/30 hover:decoration-white">直接選行程</a>
         </div>
       </div>
@@ -134,7 +168,20 @@ const schema = [
             <dd class="mt-2 text-sm font-extrabold">2 小時至半天</dd>
           </div>
         </dl>
-        <a href="/areas/love-river-vs-heart-vs-bay/" class="flex min-h-14 items-center justify-between bg-white px-6 text-sm font-extrabold text-navy no-underline">
+        <div class="border-t border-white/10 px-6 py-5">
+          <GoogleRating variant="footer" showAddress={false} />
+        </div>
+        <a
+          href="/transport/"
+          class="flex min-h-14 items-center justify-between bg-white px-6 text-sm font-extrabold text-navy no-underline"
+        >
+          愛河捷運哪一站？
+          <span aria-hidden="true">↗</span>
+        </a>
+        <a
+          href="/areas/love-river-vs-heart-vs-bay/"
+          class="flex min-h-14 items-center justify-between border-t border-white/10 bg-white/10 px-6 text-sm font-extrabold text-white no-underline"
+        >
           三個「愛河」差在哪？
           <span aria-hidden="true">↗</span>
         </a>
@@ -142,7 +189,9 @@ const schema = [
     </div>
   </section>
 
-  <WeatherCard />
+  <LiveWeather server:defer>
+    <WeatherSkeleton slot="fallback" />
+  </LiveWeather>
 
   <section class="section-pad bg-cream">
     <div class="site-shell">
@@ -181,6 +230,8 @@ const schema = [
     </div>
   </section>
 
+  <SeasonalStrategy variant="compact" />
+
   <section class="section-pad bg-sand">
     <div class="site-shell">
       <div class="max-w-2xl">
@@ -215,7 +266,7 @@ const schema = [
         <div class="grid gap-5 sm:grid-cols-2">
           <article class="overflow-hidden rounded-[1.75rem] bg-navy text-white">
             <div class="aspect-[4/3] overflow-hidden">
-              <Picture name="boat" alt="愛之船國賓站入口與綠蔭" class="h-full w-full object-cover" width={1280} height={853} />
+              <Picture name="boat" alt="Love Boat 愛之船（國賓站）on Love River 愛河" class="h-full w-full object-cover" width={1280} height={853} />
             </div>
             <div class="p-6">
               <div class="flex items-center justify-between gap-3">
@@ -231,7 +282,7 @@ const schema = [
           </article>
           <article class="overflow-hidden rounded-[1.75rem] bg-white shadow-xl">
             <div class="aspect-[4/3] overflow-hidden">
-              <Picture name="gondola" alt="夜間航行於愛河上的貢多拉船" class="h-full w-full object-cover" width={1280} height={960} />
+              <Picture name="gondola" alt="Gondola on Love River 愛河 - 夜間航行的貢多拉船" class="h-full w-full object-cover" width={1280} height={960} />
             </div>
             <div class="p-6">
               <div class="flex items-center justify-between gap-3">
@@ -266,6 +317,8 @@ const schema = [
     </div>
   </section>
 
+  <AudienceRoutes />
+
   <section class="section-pad bg-cream">
     <div class="site-shell">
       <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
@@ -294,6 +347,58 @@ const schema = [
     </div>
   </section>
 
+  <VisitorFacilities variant="compact" />
+
+  <Stewardship variant="compact" />
+
+  <section class="section-pad bg-sand" aria-labelledby="about-love-river" id="about">
+    <div class="site-shell grid gap-12 lg:grid-cols-[0.88fr_1.12fr]">
+      <div>
+        <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">About · Location · History</p>
+        <h2 id="about-love-river" class="section-title mt-4">About Love River 愛河</h2>
+        <p class="mt-5 text-base leading-8 text-ink/75">
+          Love River（愛河）是高雄最具代表性的城市水岸，貫穿市區並串起愛河市區段、愛河灣與愛河之心，也是遊船、夜景、單車與散步的主要場域。
+        </p>
+        <nav aria-label="地理歸屬層級" class="mt-6">
+          <ol class="flex flex-wrap items-center gap-2 text-xs font-bold text-ink/65">
+            {
+              entityHierarchy.map((item) => (
+                <li class="rounded-full border border-navy/12 bg-white px-3 py-1.5">{item}</li>
+              ))
+            }
+          </ol>
+        </nav>
+        <div class="mt-8">
+          <GoogleRating variant="card" />
+        </div>
+      </div>
+      <div class="grid gap-8">
+        <article>
+          <h2 class="text-2xl font-extrabold tracking-[-0.03em] text-navy">Location &amp; How to Visit Love River 愛河</h2>
+          <p class="mt-4 text-base leading-8 text-ink/75">
+            Love River 愛河位於高雄市前金區河東路 188-1 號，鄰近捷運 O4 前金站與 O2 鹽埕埔站；要前往愛河灣可搭輕軌 C10–C12，愛河之心則使用 C24 愛河之心站。
+            <a href="/transport/" class="font-extrabold text-river">查看完整交通方式 →</a>
+          </p>
+        </article>
+        <article>
+          <h2 class="text-2xl font-extrabold tracking-[-0.03em] text-navy">Landmarks &amp; Attractions Around Love River</h2>
+          <p class="mt-4 text-base leading-8 text-ink/75">{entityNearby}</p>
+        </article>
+        <article>
+          <h2 class="text-2xl font-extrabold tracking-[-0.03em] text-navy">History &amp; Significance of Love River 愛河</h2>
+          <p class="mt-4 text-base leading-8 text-ink/75">
+            愛河是高雄城市發展的重要軸線，從早期的運輸與排水功能，到整治後成為市民與旅客共享的親水空間，見證港都的轉型。
+            <a href="/history/" class="font-extrabold text-river">閱讀愛河歷史 →</a>
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <MapEmbed />
+
+  <FaqSection tone="cream" />
+
   <section class="bg-gold py-14">
     <div class="site-shell grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
       <div>
@@ -305,4 +410,6 @@ const schema = [
       </div>
     </div>
   </section>
+
+  <SourcesSection />
 </BaseLayout>

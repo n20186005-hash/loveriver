@@ -1,0 +1,93 @@
+---
+import { audienceRoutes, generalRoutes } from "../data/audiences";
+---
+
+<section class="section-pad bg-sand" id="routes" aria-labelledby="routes-title">
+  <div class="site-shell">
+    <div class="max-w-3xl">
+      <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">By Traveler Type</p>
+      <h2 id="routes-title" class="section-title mt-4">按人群定制的遊覽方案</h2>
+      <p class="mt-5 text-base leading-8 text-ink/75">
+        同樣的河岸，不同同行者需要的節奏完全不同。依你的出行組成與體力挑一條，再看行程長度決定要不要延伸到港灣。
+      </p>
+    </div>
+
+    <ul class="mt-10 grid gap-5 lg:grid-cols-3">
+      {
+        audienceRoutes.map((route) => (
+          <li class="flex flex-col rounded-3xl border border-navy/8 bg-white p-6 shadow-[0_1.5rem_4rem_rgba(6,27,42,.06)]">
+            <h3 class="text-2xl font-extrabold tracking-[-0.04em] text-navy">{route.title}</h3>
+            <p class="mt-2 text-sm leading-6 text-ink/70">{route.subtitle}</p>
+
+            <dl class="mt-5 grid grid-cols-2 gap-3 border-y border-navy/8 py-4 text-xs">
+              <div>
+                <dt class="text-ink/50">建議時長</dt>
+                <dd class="mt-1 font-extrabold text-navy">{route.duration}</dd>
+              </div>
+              <div>
+                <dt class="text-ink/50">主要車站</dt>
+                <dd class="mt-1 font-extrabold text-navy">{route.station}</dd>
+              </div>
+              <div class="col-span-2">
+                <dt class="text-ink/50">行進節奏</dt>
+                <dd class="mt-1 font-extrabold text-navy">{route.pace}</dd>
+              </div>
+            </dl>
+
+            <p class="mt-5 text-xs font-extrabold tracking-[0.14em] text-river">路線重點</p>
+            <ul class="mt-2 grid gap-1.5 text-sm leading-6 text-ink/75">
+              {route.highlights.map((item) => <li class="flex gap-2"><span aria-hidden="true" class="text-river">・</span>{item}</li>)}
+            </ul>
+
+            <p class="mt-5 text-xs font-extrabold tracking-[0.14em] text-coral">出發前留意</p>
+            <ul class="mt-2 grid gap-1.5 text-sm leading-6 text-ink/70">
+              {route.cautions.map((item) => <li class="flex gap-2"><span aria-hidden="true" class="text-coral">・</span>{item}</li>)}
+            </ul>
+
+            <a href={route.href} class="mt-auto pt-6 text-sm font-extrabold text-coral no-underline">
+              看完整路線 <span aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-14">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">General Routes</p>
+          <h3 class="mt-3 text-2xl font-extrabold tracking-[-0.035em] text-navy sm:text-3xl">推薦通用遊覽路線（半日／全日）</h3>
+        </div>
+        <a href="/itineraries/" class="btn-secondary self-start">全部行程路線</a>
+      </div>
+
+      <div class="mt-8 grid gap-5 lg:grid-cols-2">
+        {
+          generalRoutes.map((route) => (
+            <article class="rounded-3xl bg-navy p-6 text-white sm:p-7">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <h4 class="text-2xl font-extrabold tracking-[-0.04em]">{route.title}</h4>
+                <span class="rounded-full bg-white/10 px-3 py-1.5 text-xs font-extrabold text-gold">{route.duration}</span>
+              </div>
+              <p class="mt-4 text-sm leading-7 text-white/75">{route.summary}</p>
+              <ol class="mt-6 grid gap-2.5 border-t border-white/10 pt-5 text-sm leading-6 text-white/80">
+                {route.stops.map((stop, index) => (
+                  <li class="flex gap-3">
+                    <span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-white/10 text-[0.7rem] font-extrabold text-gold">
+                      {index + 1}
+                    </span>
+                    <span>{stop}</span>
+                  </li>
+                ))}
+              </ol>
+              <p class="mt-6 rounded-xl bg-white/5 px-4 py-3 text-xs leading-6 text-white/70">{route.suitable}</p>
+              <a href={route.href} class="mt-5 inline-flex text-sm font-extrabold text-gold no-underline">
+                查看完整安排 <span aria-hidden="true">→</span>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

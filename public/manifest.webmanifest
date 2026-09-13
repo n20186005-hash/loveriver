@@ -1,0 +1,68 @@
+{
+  "name": "高雄愛河旅遊指南｜Love River Kaohsiung Guide",
+  "short_name": "愛河指南",
+  "description": "高雄愛河（Love River）旅遊指南：分區、交通、遊船、夜景與一日遊路線，離線也能查看。",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "lang": "zh-Hant-TW",
+  "dir": "ltr",
+  "background_color": "#fbf8f1",
+  "theme_color": "#09263a",
+  "categories": ["travel", "navigation", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "愛河地圖",
+      "short_name": "地圖",
+      "url": "/map/",
+      "description": "三大區域、碼頭與最近車站"
+    },
+    {
+      "name": "愛河遊船",
+      "short_name": "遊船",
+      "url": "/boats/",
+      "description": "愛之船與貢多拉比較"
+    },
+    {
+      "name": "兩小時路線",
+      "short_name": "行程",
+      "url": "/itineraries/2-hour/",
+      "description": "時間有限的推薦走法"
+    }
+  ]
+}

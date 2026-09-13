@@ -1,0 +1,83 @@
+---
+import { scienceTopics, visitorDuties } from "../data/stewardship";
+
+interface Props {
+  variant?: "full" | "compact";
+}
+
+const { variant = "full" } = Astro.props;
+---
+
+<section class="section-pad bg-river-light" id="stewardship" aria-labelledby="stewardship-title">
+  <div class="site-shell">
+    <div class="max-w-3xl">
+      <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">Science &amp; Stewardship</p>
+      <h2 id="stewardship-title" class="section-title mt-4">科普與訪客責任</h2>
+      <p class="mt-5 text-base leading-8 text-ink/75">
+        看懂一條河，比拍好一張照更需要背景知識。以下把愛河的河道成因、河口生態、水質演變與感潮特性整理成五個可讀的切入點，並列出在現場最容易做到的八件事。
+      </p>
+    </div>
+
+    <div class="mt-10 grid gap-8 lg:grid-cols-[1.12fr_0.88fr]">
+      <div>
+        <h3 class="text-xs font-extrabold tracking-[0.16em] text-river">五個理解愛河的切入點</h3>
+        <div class="mt-4 grid gap-3">
+          {
+            scienceTopics.map((topic, index) => (
+              <details class="group rounded-2xl border border-navy/8 bg-white px-5 py-4 open:shadow-[0_1rem_3rem_rgba(6,27,42,.06)]" open={index === 0}>
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4">
+                  <span class="flex items-baseline gap-3">
+                    <span class="text-[0.65rem] font-extrabold tracking-[0.14em] text-ink/40">{topic.label}</span>
+                    <span class="text-base font-extrabold tracking-[-0.02em] text-navy">{topic.title}</span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    class="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-navy/12 text-river transition group-open:rotate-45"
+                  >
+                    ＋
+                  </span>
+                </summary>
+                <p class="mt-4 text-sm leading-7 text-ink/75">{topic.body}</p>
+                <ul class="mt-4 grid gap-1.5 border-t border-navy/8 pt-4 text-sm leading-6 text-ink/70">
+                  {topic.points.map((point) => (
+                    <li class="flex gap-2">
+                      <span aria-hidden="true" class="text-river">・</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-xs font-extrabold tracking-[0.16em] text-river">現場最容易做到的八件事</h3>
+        <ol class="mt-4 grid gap-2.5">
+          {
+            visitorDuties.map((duty, index) => (
+              <li class="flex gap-4 rounded-2xl bg-white/75 px-5 py-4">
+                <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-river text-[0.7rem] font-extrabold text-white">
+                  {index + 1}
+                </span>
+                <span>
+                  <span class="block text-sm font-extrabold text-navy">{duty.title}</span>
+                  <span class="mt-1 block text-xs leading-6 text-ink/65">{duty.body}</span>
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+
+        {
+          variant === "compact" && (
+            <a href="/stewardship/" class="btn-secondary mt-6">
+              延伸閱讀科普與責任全文 <span aria-hidden="true">→</span>
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

@@ -2,22 +2,51 @@
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Picture from "../components/Picture.astro";
+import GoogleRating from "../components/GoogleRating.astro";
+import FaqSection from "../components/FaqSection.astro";
+import SourcesSection from "../components/SourcesSection.astro";
+import { buildFaqSchema, type FaqItem } from "../data/faq";
+import { sources as defaultSources, type SourceItem } from "../data/sources";
+import { attraction, formatVerifiedLabel, mapsSearchUrl, site, type RatingInfo } from "../data/site";
+
+/** 產生絕對網址，避免結構化資料與 hreflang 裡散落硬編網域。 */
+const abs = (path: string) => new URL(path, site.url).href;
 
 export async function getStaticPaths() {
   const entries = await getCollection("pages");
-  return entries.map((entry) => ({
-    params: { slug: entry.id.replace(/\/index$/, "") },
-    props: { entry },
-  }));
+  const ids = new Set(entries.map((entry) => entry.id.replace(/\/index$/, "")));
+
+  return entries.map((entry) => {
+    const baseId = entry.id.replace(/\/index$/, "");
+    const isEn = baseId === "en" || baseId.startsWith("en/");
+    // 英文版路徑為 /en/...；中文對照頁則去掉 en/ 前綴還原。
+    const zhId = isEn ? baseId.replace(/^en\/?/, "") : baseId;
+    const enId = zhId === "" ? "en" : `en/${zhId}`;
+
+    return {
+      params: { slug: baseId },
+      props: {
+        entry,
+        locale: (isEn ? "en" : "zh-Hant-TW") as "en" | "zh-Hant-TW",
+        zhId,
+        // 沒有對應譯頁時不輸出 hreflang，避免指向不存在的網址。
+        hasCounterpart: isEn || ids.has(enId),
+      },
+    };
+  });
 }
 
 interface Props {
   entry: CollectionEntry<"pages">;
+  locale: "en" | "zh-Hant-TW";
+  zhId: string;
+  hasCounterpart: boolean;
 }
 
-const { entry } = Astro.props;
+const { entry, locale, zhId, hasCounterpart } = Astro.props;
 const { Content, headings } = await render(entry);
 const data = entry.data;
+const isEn = locale === "en";
 const parts = entry.id.replace(/\/index$/, "").split("/");
 const sectionLabels: Record<string, string> = {
   areas: "愛河分區",
@@ -25,12 +54,113 @@ const sectionLabels: Record<string, string> = {
   itineraries: "行程路線",
   places: "沿岸景點",
 };
-const section = parts.length > 1 ? sectionLabels[parts[0]] : undefined;
-const pageUrl = `https://loveriver.org/${entry.id.replace(/\/index$/, "")}/`;
+const section = !isEn && parts.length > 1 ? sectionLabels[parts[0]] : undefined;
+
+/**
+ * 以愛河本身為主體的頁面：沒有自填評分時沿用全站愛河評分。
+ * 其他景點頁（高流、大港橋、愛河之心…）必須自填，否則不顯示評分，
+ * 避免把愛河的分數掛在別的景點頁上。
+ */
+const loveRiverPageIds = new Set([
+  "",
+  "guide",
+  "history",
+  "best-time-to-visit",
+  "areas",
+  "areas/downtown-love-river",
+  "areas/love-river-vs-heart-vs-bay",
+  "places",
+]);
+
+/** 把 frontmatter 的 rating 補齊成元件需要的形狀，並保留可追溯的來源網址。 */
+const pageRating: RatingInfo | undefined = data.rating
+  ? {
+      subject: data.rating.subject ?? data.sourceLabel ?? data.title,
+      value: data.rating.value,
+      reviewCount: data.rating.reviewCount,
+      bestRating: 5,
+      worstRating: 1,
+      source: "Google Maps",
+      sourceUrl: data.rating.sourceUrl ?? mapsSearchUrl(data.rating.subject ?? data.sourceLabel ?? data.title),
+      verifiedAt: data.rating.verifiedAt,
+      verifiedLabel: formatVerifiedLabel(data.rating.verifiedAt),
+    }
+  : undefined;
+
+/** 本頁實際要顯示的評分：自填的優先，否則只有愛河主體頁沿用全站評分。 */
+const ratingToShow: RatingInfo | undefined =
+  pageRating ?? (loveRiverPageIds.has(zhId) ? attraction.rating : undefined);
+
+/** 景點自己的評分要一併列進頁尾來源清單，讓分數來源可被查證。 */
+const pageSources: SourceItem[] | undefined =
+  pageRating && pageRating.sourceUrl !== attraction.rating.sourceUrl
+    ? [
+        ...defaultSources,
+        {
+          label: `Google Maps－${pageRating.subject}`,
+          href: pageRating.sourceUrl,
+          note: isEn
+            ? `Source of the rating and review count on this page (verified ${pageRating.verifiedLabel}).`
+            : `本頁評分與評論數來源（${pageRating.verifiedLabel} 查核）。`,
+        },
+      ]
+    : undefined;
+
+// 同一份內容的兩種語言網址，用來輸出雙向 hreflang。
+const zhPath = zhId === "" ? "/" : `/${zhId}/`;
+const enPath = zhId === "" ? "/en/" : `/en/${zhId}/`;
+const pageUrl = abs(Astro.url.pathname);
+const alternates = hasCounterpart
+  ? [
+      { hreflang: "zh-Hant-TW", href: abs(zhPath) },
+      { hreflang: "en", href: abs(enPath) },
+      { hreflang: "x-default", href: abs(zhPath) },
+    ]
+  : undefined;
+const langSwitch = hasCounterpart
+  ? isEn
+    ? { href: zhPath, label: "中文" }
+    : { href: enPath, label: "EN" }
+  : undefined;
+
+const t = isEn
+  ? {
+      home: "Home",
+      breadcrumb: "Breadcrumb",
+      onThisPage: "On this page",
+      pageContents: "Page contents",
+      sources: "Sources",
+      viewSource: "View official source",
+      inShort: "In short",
+      faqTitle: "Love River FAQ",
+      faqDescription: "The questions people ask most often before their first visit.",
+      nextTitle: "Now fit it into your day",
+      nextBody: "Check how to get there, then compare the two boat experiences before you book.",
+    }
+  : {
+      home: "首頁",
+      breadcrumb: "麵包屑",
+      onThisPage: "本頁重點",
+      pageContents: "本頁目錄",
+      sources: "資料來源",
+      viewSource: "查看官方來源",
+      inShort: "先說結論",
+      faqTitle: "這一頁的常見問題",
+      faqDescription: "把最常被追問的細節直接回答，省下你再往回找的時間。",
+      nextTitle: "接下來，把路線排進時間裡",
+      nextBody: "先看三區差異，或直接選一條兩小時路線；到現場再開啟地圖導航。",
+    };
+
+const ctaPrimary = isEn
+  ? { href: "/en/transport/", label: "Getting there" }
+  : { href: "/areas/love-river-vs-heart-vs-bay/", label: "比較三個區域" };
+const ctaSecondary = isEn
+  ? { href: "/en/boats/cruise-comparison/", label: "Love Boat vs Gondola →" }
+  : { href: "/itineraries/2-hour/", label: "兩小時路線 →" };
 const breadcrumbs = [
-  { "@type": "ListItem", position: 1, name: "首頁", item: "https://loveriver.org/" },
+  { "@type": "ListItem", position: 1, name: t.home, item: abs("/") },
   ...(section
-    ? [{ "@type": "ListItem", position: 2, name: section, item: `https://loveriver.org/${parts[0]}/` }]
+    ? [{ "@type": "ListItem", position: 2, name: section, item: abs(`/${parts[0]}/`) }]
     : []),
   {
     "@type": "ListItem",
@@ -40,6 +170,8 @@ const breadcrumbs = [
   },
 ];
 
+const pageImage = abs(`/images/${data.image}-1280.webp`);
+
 const mainSchema =
   data.type === "place"
     ? {
@@ -48,7 +180,8 @@ const mainSchema =
         name: data.title,
         description: data.description,
         url: pageUrl,
-        image: `https://loveriver.org/images/${data.image}-1280.webp`,
+        image: pageImage,
+        inLanguage: locale,
         ...(data.latitude &&
           data.longitude && {
             geo: {
@@ -67,6 +200,8 @@ const mainSchema =
           name: data.title,
           description: data.description,
           url: pageUrl,
+          image: pageImage,
+          inLanguage: locale,
           itinerary: data.tags,
         }
       : {
@@ -74,11 +209,16 @@ const mainSchema =
           "@type": "Article",
           headline: data.title,
           description: data.description,
-          image: `https://loveriver.org/images/${data.image}-1280.webp`,
-          inLanguage: "zh-Hant-TW",
+          image: pageImage,
+          inLanguage: locale,
           mainEntityOfPage: pageUrl,
-          author: { "@type": "Organization", name: "高雄愛河旅遊指南" },
+          author: { "@type": "Organization", name: isEn ? site.nameEn : site.name },
         };
+
+const faqItems: FaqItem[] = data.faq ?? [];
+const isFaqPage = entry.id.replace(/\/index$/, "") === "faq";
+// 有填頁面問答就輸出 FAQPage；常見問題頁則沿用全站問答，兩者不重複輸出。
+const faqSchema = isFaqPage ? buildFaqSchema() : faqItems.length > 0 ? buildFaqSchema(faqItems) : undefined;
 
 const schema = [
   mainSchema,
@@ -87,6 +227,7 @@ const schema = [
     "@type": "BreadcrumbList",
     itemListElement: breadcrumbs,
   },
+  ...(faqSchema ? [faqSchema] : []),
 ];
 ---
 
@@ -98,13 +239,25 @@ const schema = [
   keywords={data.keywords}
   pageType="article"
   schema={schema}
+  lang={locale}
+  alternates={alternates}
+  langSwitch={langSwitch}
 >
   <section class="overflow-hidden bg-deep text-white">
     <div class="site-shell py-5">
-      <nav class="flex flex-wrap items-center gap-2 text-xs text-white/45" aria-label="麵包屑">
-        <a href="/" class="hover:text-white">首頁</a>
+      <nav class="flex flex-wrap items-center gap-2 text-xs text-white/45" aria-label={t.breadcrumb}>
+        <a href={isEn ? "/en/" : "/"} class="hover:text-white">{t.home}</a>
         <span aria-hidden="true">/</span>
-        {section && <><a href={`/${parts[0]}/`} class="hover:text-white">{section}</a><span aria-hidden="true">/</span></>}
+        {
+          section && (
+            <>
+              <a href={`/${parts[0]}/`} class="hover:text-white">
+                {section}
+              </a>
+              <span aria-hidden="true">/</span>
+            </>
+          )
+        }
         <span class="text-white/72" aria-current="page">{data.title}</span>
       </nav>
     </div>
@@ -130,8 +283,8 @@ const schema = [
     <div class="site-shell grid gap-12 lg:grid-cols-[15rem_minmax(0,46rem)] lg:justify-center lg:gap-16">
       <aside class="hidden lg:block">
         <div class="sticky top-28">
-          <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">本頁重點</p>
-          <nav class="mt-5 grid gap-1 border-l border-navy/12 pl-4" aria-label="本頁目錄">
+          <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">{t.onThisPage}</p>
+          <nav class="mt-5 grid gap-1 border-l border-navy/12 pl-4" aria-label={t.pageContents}>
             {
               headings
                 .filter((heading) => heading.depth === 2)
@@ -143,30 +296,64 @@ const schema = [
             }
           </nav>
           <div class="mt-8 rounded-2xl bg-river-light p-4 text-xs leading-6 text-ink/62">
-            <strong class="block text-navy">資料來源</strong>
-            {data.sourceUrl && (
-              <a href={data.sourceUrl} target="_blank" rel="noopener" class="mt-2 block font-extrabold text-river">
-                {data.sourceLabel ?? "查看官方來源"} ↗
-              </a>
-            )}
+            <strong class="block text-navy">{t.sources}</strong>
+            {
+              data.sourceUrl && (
+                <a
+                  href={data.sourceUrl}
+                  target="_blank"
+                  rel="noopener"
+                  class="mt-2 block font-extrabold text-river"
+                >
+                  {data.sourceLabel ?? t.viewSource} ↗
+                </a>
+              )
+            }
           </div>
         </div>
       </aside>
       <article class="content min-w-0">
         <div class="mb-8 rounded-2xl border border-river/15 bg-river-light/60 p-5 text-base leading-8 text-navy">
-          <strong class="mr-2">先說結論</strong>
+          <strong class="mr-2">{t.inShort}</strong>
           {data.summary}
         </div>
+        {
+          ratingToShow && (
+            <div class="mb-8">
+              <GoogleRating variant="card" showAddress={false} lang={locale} rating={ratingToShow} />
+            </div>
+          )
+        }
         <Content />
         <div class="mt-12 rounded-3xl bg-deep p-6 text-white sm:p-8">
-          <h2 class="!mt-0 !text-2xl !text-white">接下來，把路線排進時間裡</h2>
-          <p class="!mt-3 text-sm leading-7 text-white/58">先看三區差異，或直接選一條兩小時路線；到現場再開啟地圖導航。</p>
+          <h2 class="!mt-0 !text-2xl !text-white">{t.nextTitle}</h2>
+          <p class="!mt-3 text-sm leading-7 text-white/58">{t.nextBody}</p>
           <div class="mt-5 flex flex-wrap gap-3">
-            <a href="/areas/love-river-vs-heart-vs-bay/" class="btn-light !text-sm">比較三個區域</a>
-            <a href="/itineraries/2-hour/" class="rounded-full border border-white/15 px-4 py-3 text-sm font-extrabold text-white no-underline">兩小時路線 →</a>
+            <a href={ctaPrimary.href} class="btn-light !text-sm">{ctaPrimary.label}</a>
+            <a
+              href={ctaSecondary.href}
+              class="rounded-full border border-white/15 px-4 py-3 text-sm font-extrabold text-white no-underline"
+            >
+              {ctaSecondary.label}
+            </a>
           </div>
         </div>
       </article>
     </div>
   </section>
+
+  {
+    faqItems.length > 0 && (
+      <FaqSection
+        items={faqItems}
+        title={t.faqTitle}
+        description={t.faqDescription}
+        emitSchema={false}
+        footNote={null}
+        tone="sand"
+      />
+    )
+  }
+
+  <SourcesSection sources={pageSources} />
 </BaseLayout>

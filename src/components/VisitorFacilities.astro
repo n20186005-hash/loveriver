@@ -1,0 +1,113 @@
+---
+import { facilities, facilitiesDisclaimer } from "../data/facilities";
+
+interface Props {
+  variant?: "full" | "compact";
+}
+
+const { variant = "full" } = Astro.props;
+
+const icons: Record<string, string> = {
+  restroom:
+    '<circle cx="9" cy="4.8" r="1.6"/><path d="M9 7.2v5"/><path d="M6.7 20.4 8.2 12.2h1.6l1.5 8.2"/><circle cx="16.6" cy="4.8" r="1.6"/><path d="M16.6 7.2v5"/><path d="M16.6 12.2 14.8 20.4"/><path d="M16.6 12.2l1.8 8.2"/>',
+  parking:
+    '<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="3.4"/><path d="M9.6 17.2V7h3.1a2.95 2.95 0 0 1 0 5.9H9.6"/>',
+  dining:
+    '<path d="M7.6 3.4v6.2a2.1 2.1 0 0 0 4.2 0V3.4"/><path d="M9.7 9.6V20.6"/><path d="M16.6 3.4c-1.5 1.9-2.2 3.7-2.2 5.4 0 1.7.7 2.8 2.2 3.3V20.6"/>',
+  stay: '<path d="M3.2 19.4V7.4"/><path d="M3.2 12.6h17.6v6.8"/><path d="M7.4 12.6V10a1.4 1.4 0 0 1 1.4-1.4h5.4a1.4 1.4 0 0 1 1.4 1.4v2.6"/>',
+  shopping:
+    '<path d="M5 8.2h14l-1.1 11.8H6.1L5 8.2Z"/><path d="M9.2 8.2V6.4a2.8 2.8 0 0 1 5.6 0v1.8"/>',
+  fuel: '<rect x="3" y="4.2" width="11" height="15.6" rx="2.4"/><path d="M14 9.4h1.8a2 2 0 0 1 2 2v5.2a1.6 1.6 0 0 0 3.2 0v-5.4l-1.8-2.6"/><path d="M9.6 8.6 7.4 13h2.6l-.8 3.6 3-4.6h-2.2l1-3.4Z"/>',
+  access:
+    '<circle cx="11.6" cy="4.5" r="1.6"/><path d="M11.6 6.8v5h4.2"/><path d="M15.8 11.8 18.4 20"/><circle cx="11.4" cy="16.2" r="4.4"/><path d="M8.8 15h5"/>',
+  service:
+    '<circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.4"/><path d="M12 8.1h.01"/>',
+};
+---
+
+<section class="section-pad bg-white" id="facilities" aria-labelledby="facilities-title">
+  <div class="site-shell">
+    <div class="max-w-3xl">
+      <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">Visitor Services</p>
+      <h2 id="facilities-title" class="section-title mt-4">訪客服務與周邊設施</h2>
+      <p class="mt-5 text-base leading-8 text-ink/75">
+        廁所、飲水、停車、餐飲、住宿、補給、加油充電與無障礙動線，是行前最容易被忽略、現場卻最影響體驗的環節。以下按「設施類型」整理愛河市區段與愛河灣一帶的普遍狀況與選擇原則。
+      </p>
+    </div>
+
+    <p class="mt-6 rounded-2xl border border-gold/35 bg-gold/10 px-5 py-4 text-xs leading-6 text-ink/70">
+      {facilitiesDisclaimer}
+    </p>
+
+    <ul class:list={["mt-8 grid gap-4", variant === "full" ? "md:grid-cols-2" : "sm:grid-cols-2 xl:grid-cols-4"]}>
+      {
+        facilities.map((item) => (
+          <li class="flex flex-col rounded-3xl border border-navy/8 bg-white p-6 shadow-[0_1rem_3rem_rgba(6,27,42,.05)]">
+            <div class="flex items-center gap-3">
+              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-river-light text-river">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-6 w-6"
+                  aria-hidden="true"
+                  set:html={icons[item.id] ?? ""}
+                />
+              </span>
+              <div>
+                <h3 class="text-lg font-extrabold tracking-[-0.03em] text-navy">{item.title}</h3>
+                <p class="text-[0.65rem] font-extrabold tracking-[0.14em] text-ink/40">{item.label}</p>
+              </div>
+            </div>
+
+            <p class="mt-4 text-sm leading-7 text-ink/72">{item.summary}</p>
+
+            {variant === "full" ? (
+              <>
+                <p class="mt-5 text-xs font-extrabold tracking-[0.14em] text-river">常見類型</p>
+                <ul class="mt-2 grid gap-1.5 text-sm leading-6 text-ink/75">
+                  {item.types.map((type) => (
+                    <li class="flex gap-2">
+                      <span aria-hidden="true" class="text-river">・</span>
+                      <span>{type}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <p class="mt-5 text-xs font-extrabold tracking-[0.14em] text-river">大致分布</p>
+                <p class="mt-2 text-sm leading-7 text-ink/72">{item.where}</p>
+
+                <p class="mt-5 text-xs font-extrabold tracking-[0.14em] text-coral">行前提醒</p>
+                <ul class="mt-2 grid gap-1.5 text-sm leading-6 text-ink/70">
+                  {item.notes.map((note) => (
+                    <li class="flex gap-2">
+                      <span aria-hidden="true" class="text-coral">・</span>
+                      <span>{note}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <ul class="mt-4 flex flex-wrap gap-1.5">
+                {item.types.slice(0, 3).map((type) => (
+                  <li class="rounded-full border border-navy/10 bg-sand/70 px-2.5 py-1 text-[0.68rem] font-bold text-ink/65">
+                    {type}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {variant === "compact" && (
+              <a href="/facilities/" class="mt-auto pt-5 text-xs font-extrabold text-coral no-underline">
+                看選擇原則與分布 <span aria-hidden="true">→</span>
+              </a>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

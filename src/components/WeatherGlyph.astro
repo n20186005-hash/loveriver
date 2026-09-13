@@ -1,0 +1,71 @@
+---
+import type { WeatherGlyph as GlyphName } from "../lib/weather";
+
+interface Props {
+  glyph: GlyphName;
+  class?: string;
+}
+
+const { glyph, class: className } = Astro.props;
+
+const SHAPES: Record<GlyphName, string> = {
+  "clear-day": `
+    <circle cx="12" cy="12" r="4.2" />
+    <path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6" />
+  `,
+  "clear-night": `
+    <path d="M20.2 14.6A8.4 8.4 0 0 1 9.4 3.8a8.6 8.6 0 1 0 10.8 10.8Z" />
+  `,
+  partly: `
+    <circle cx="8.6" cy="8.6" r="3" />
+    <path d="M8.6 3v1.5M3 8.6h1.5M4.4 4.4l1.1 1.1M12.8 4.4l-1.1 1.1" />
+    <path d="M11.4 19.2h6.2a3.3 3.3 0 0 0 .2-6.6 4.9 4.9 0 0 0-9.3-1 3.4 3.4 0 0 0 2.9 7.6Z" />
+  `,
+  cloudy: `
+    <path d="M7 19h9.6a3.6 3.6 0 0 0 .2-7.2 5.4 5.4 0 0 0-10.2-1.2A3.7 3.7 0 0 0 7 19Z" />
+  `,
+  fog: `
+    <path d="M7 15h9.6a3.4 3.4 0 0 0 .2-6.8 5.2 5.2 0 0 0-9.8-1.1A3.5 3.5 0 0 0 7 15Z" />
+    <path d="M5 18.4h13M7.5 21.2h9" />
+  `,
+  drizzle: `
+    <path d="M7 15.4h9.6a3.5 3.5 0 0 0 .2-7 5.3 5.3 0 0 0-10-1.1A3.6 3.6 0 0 0 7 15.4Z" />
+    <path d="M9.6 18.2v1.3M13 18.2v1.3M16.4 18.2v1.3" />
+  `,
+  rain: `
+    <path d="M7 15.4h9.6a3.5 3.5 0 0 0 .2-7 5.3 5.3 0 0 0-10-1.1A3.6 3.6 0 0 0 7 15.4Z" />
+    <path d="M9.8 17.8 8.8 21M13.4 17.8 12.4 21M17 17.8 16 21" />
+  `,
+  "heavy-rain": `
+    <path d="M7 14.8h9.6a3.5 3.5 0 0 0 .2-7 5.3 5.3 0 0 0-10-1.1A3.6 3.6 0 0 0 7 14.8Z" />
+    <path d="M9.4 17.2 7.9 21.4M12.6 17.2 11.1 21.4M15.8 17.2 14.3 21.4" />
+  `,
+  thunder: `
+    <path d="M7 14.6h9.6a3.5 3.5 0 0 0 .2-7 5.3 5.3 0 0 0-10-1.1A3.6 3.6 0 0 0 7 14.6Z" />
+    <path d="M13.4 16.4 10.8 20h2.6l-1.1 3" />
+  `,
+};
+
+const shape = SHAPES[glyph] ?? SHAPES.cloudy;
+---
+
+<svg
+  class:list={["weather-glyph", className]}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.6"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  set:html={shape}
+/>
+
+<style>
+  .weather-glyph {
+    display: block;
+    width: 1em;
+    height: 1em;
+  }
+</style>

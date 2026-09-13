@@ -1,0 +1,105 @@
+---
+import { seasons, seasonSourceNote } from "../data/seasons";
+
+interface Props {
+  variant?: "full" | "compact";
+}
+
+const { variant = "full" } = Astro.props;
+
+const accentClass: Record<string, string> = {
+  river: "border-river/25 bg-river-light/45",
+  gold: "border-gold/45 bg-gold/15",
+  coral: "border-coral/25 bg-coral/10",
+  navy: "border-navy/15 bg-navy/5",
+};
+
+const columns = [
+  { key: "temperature", label: "月均溫" },
+  { key: "rainfall", label: "降雨型態" },
+  { key: "comfort", label: "體感與舒適度" },
+  { key: "water", label: "水域與生態" },
+  { key: "best", label: "建議玩法" },
+  { key: "caution", label: "務必注意" },
+] as const;
+---
+
+<section class="section-pad bg-white" id="seasons" aria-labelledby="seasons-title">
+  <div class="site-shell">
+    <div class="max-w-3xl">
+      <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">Seasonal Strategy</p>
+      <h2 id="seasons-title" class="section-title mt-4">四季遊覽策略表</h2>
+      <p class="mt-5 text-base leading-8 text-ink/75">
+        把氣象、水位與生態放在同一張表裡看，季節差異就不再只是「熱不熱」。下表以高雄地區的常年特徵為基礎，協助你決定要帶什麼、避開什麼時段，以及把時間留給哪一段河岸。
+      </p>
+    </div>
+
+    <div class="mt-9 -mx-2 overflow-x-auto px-2 pb-2">
+      <table class="w-full min-w-[58rem] border-collapse text-left text-sm">
+        <caption class="sr-only">春、夏、秋、冬四季在月均溫、降雨型態、體感、水域與生態、建議玩法與注意事項的對照表</caption>
+        <thead>
+          <tr class="bg-sand/80 text-xs font-extrabold tracking-[0.12em] text-ink/60">
+            <th scope="col" class="rounded-l-xl px-4 py-3">季節</th>
+            {columns.map((column) => <th scope="col" class="px-4 py-3">{column.label}</th>)}
+            <th scope="col" class="rounded-r-xl px-4 py-3"><span class="sr-only">說明</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            seasons.map((season) => (
+              <tr class="border-b border-navy/8 align-top last:border-b-0">
+                <th scope="row" class="whitespace-nowrap px-4 py-5 text-left">
+                  <span class="block text-base font-extrabold text-navy">{season.name}</span>
+                  <span class="mt-1 block text-[0.68rem] font-bold text-ink/45">{season.months}</span>
+                </th>
+                {columns.map((column) => (
+                  <td class="px-4 py-5 leading-7 text-ink/72">{season[column.key]}</td>
+                ))}
+                <td class="px-4 py-5">
+                  <span class:list={["inline-flex rounded-full border px-3 py-1 text-[0.65rem] font-extrabold whitespace-nowrap", accentClass[season.accent]]}>
+                    重點
+                  </span>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-3 text-xs leading-6 text-ink/50">{seasonSourceNote}</p>
+
+    <ul class:list={["mt-10 grid gap-4", variant === "compact" ? "sm:grid-cols-2" : "sm:grid-cols-2 xl:grid-cols-4"]}>
+      {
+        seasons.map((season) => (
+          <li class:list={["rounded-2xl border p-5", accentClass[season.accent]]}>
+            <div class="flex items-baseline justify-between gap-3">
+              <p class="text-sm font-extrabold text-navy">{season.name}</p>
+              <p class="text-[0.68rem] font-bold text-ink/45">{season.months}</p>
+            </div>
+            <p class="mt-3 text-sm font-extrabold leading-6 text-navy">{season.headline}</p>
+            <dl class="mt-4 grid gap-2.5 text-xs leading-6 text-ink/70">
+              <div>
+                <dt class="font-extrabold text-ink/55">水域</dt>
+                <dd>{season.water}</dd>
+              </div>
+              <div>
+                <dt class="font-extrabold text-ink/55">生態</dt>
+                <dd>{season.ecology}</dd>
+              </div>
+            </dl>
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      variant === "compact" && (
+        <div class="mt-8">
+          <a href="/best-time-to-visit/" class="btn-secondary">
+            看最佳時間與拍攝建議 <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>

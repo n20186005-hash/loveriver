@@ -1,0 +1,343 @@
+---
+import { getWeather } from "../lib/weather";
+import { beaufort, uvLabel } from "../lib/advice";
+import WeatherGlyph from "./WeatherGlyph.astro";
+
+// 伺服器端取數：結果由邊緣快取保存，訪客端只收到整理後的 HTML 與建議。
+const weather = await getWeather();
+
+try {
+  Astro.response.headers.set(
+    "cache-control",
+    "public, max-age=300, s-maxage=900, stale-while-revalidate=1800",
+  );
+} catch {
+  /* 於預覽或非 Workers 環境可能無法設定，忽略即可 */
+}
+
+const advice = weather?.advice ?? null;
+const risks = advice?.risks ?? [];
+const hasDanger = risks.some((risk) => risk.level === "danger");
+const airOutlook = advice?.air ?? null;
+const marineOutlook = advice?.marine ?? null;
+
+const beaufortLabel = (windGust: number) => `風力 ${beaufort(windGust)} 級`;
+const uvWord = (uv: number) => `${uvLabel(uv)}（${uv}）`;
+
+const levelStyles = {
+  good: "border-river/25 bg-river-light/60",
+  watch: "border-gold/45 bg-gold/15",
+  caution: "border-coral/30 bg-coral/10",
+} as const;
+
+const groupIcons = [
+  // 衣著
+  '<path d="M8.6 3.2 5 5.1v4l2.3.9V21h9.4V10l2.3-.9v-4l-3.6-1.9L12 5.9 8.6 3.2Z"/>',
+  // 行程
+  '<circle cx="12" cy="12" r="8.6"/><path d="M15.4 8.6l-1.9 4.9-4.9 1.9 1.9-4.9 4.9-1.9Z"/>',
+  // 隨身
+  '<path d="M4.6 8.4h14.8V20H4.6z"/><path d="M9.1 8.4V6.6a2.9 2.9 0 0 1 5.8 0v1.8"/>',
+];
+
+const groups = advice
+  ? [
+      { label: "出行穿搭", icon: groupIcons[0], items: advice.groups.dressing, empty: "今天氣溫平穩，一般穿著即可。" },
+      { label: "遊玩安排", icon: groupIcons[1], items: advice.groups.activity, empty: "今天沒有特別受限的行程條件。" },
+      { label: "隨身物品", icon: groupIcons[2], items: advice.groups.items, empty: "今天不需要額外準備裝備。" },
+    ]
+  : [];
+
+const tideLabels: Record<string, string> = {
+  rising: "漲潮中",
+  falling: "退潮中",
+  steady: "變化平緩",
+};
+
+const updatedLabel = weather
+  ? new Intl.DateTimeFormat("zh-TW", {
+      timeZone: "Asia/Taipei",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(new Date(weather.updatedAt))
+  : "";
+---
+
+<section class="bg-cream py-14 sm:py-16" id="weather" aria-labelledby="weather-title">
+  <div class="site-shell">
+    {
+      weather && advice ? (
+        <article class="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-[0_1.5rem_4rem_rgba(6,27,42,.07)]">
+          <header class="flex flex-wrap items-end justify-between gap-4 border-b border-navy/8 px-6 py-6 sm:px-8">
+            <div>
+              <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">Live Weather</p>
+              <h2 id="weather-title" class="mt-2 text-2xl font-extrabold tracking-[-0.03em] text-navy sm:text-3xl">
+                愛河即時氣象與 7 日預報
+              </h2>
+              <p class="mt-2 text-xs font-bold text-ink/55">
+                高雄市前金區・愛河河東路一帶・觀測時間 {weather.current.observedAt}
+              </p>
+            </div>
+            <p class="text-xs font-bold text-ink/45">更新於 {updatedLabel}</p>
+          </header>
+
+          {/* 風險提醒：只有成立時才出現，一律置頂 */}
+          <div
+            class:list={[
+              "border-b",
+              hasDanger ? "border-coral/40 bg-coral text-white" : "border-gold/40 bg-gold/15 text-navy",
+            ]}
+          >
+            <div class="px-6 py-5 sm:px-8">
+              <p class="flex items-center gap-2 text-xs font-extrabold tracking-[0.16em]">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
+                  <path d="M12 3.6 3.1 20h17.8L12 3.6Z" />
+                  <path d="M12 10v4.4" />
+                  <path d="M12 17.4h.01" />
+                </svg>
+                {risks.length > 0 ? "風險提醒" : "目前無特殊風險"}
+              </p>
+              {
+                risks.length > 0 ? (
+                  <ul class="mt-3 grid gap-2.5 sm:grid-cols-2">
+                    {risks.map((risk) => (
+                      <li
+                        class:list={[
+                          "rounded-xl px-4 py-3",
+                          hasDanger ? "bg-white/15" : "bg-white/70",
+                        ]}
+                      >
+                        <p class="text-sm font-extrabold">{risk.title}</p>
+                        <p class="mt-1 text-xs leading-6 opacity-90">{risk.detail}</p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="mt-2 text-sm leading-7 text-navy/80">
+                    天候條件沒有需要事先調整行程的狀況，照原定計畫出發即可。
+                  </p>
+                )
+              }
+            </div>
+          </div>
+
+          <div class="grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+            <div class="border-b border-navy/8 bg-sand/50 px-6 py-7 sm:px-8 lg:border-b-0 lg:border-r">
+              <div class="flex items-center gap-5">
+                <WeatherGlyph
+                  glyph={weather.current.glyph}
+                  class:list={["h-16 w-16 shrink-0", weather.current.isDay ? "text-gold" : "text-river"]}
+                />
+                <div>
+                  <p class="text-5xl font-extrabold tracking-[-0.05em] text-navy">
+                    {weather.current.temperature.toFixed(1)}<span class="ml-1 text-2xl">°C</span>
+                  </p>
+                  <p class="mt-1 text-sm font-bold text-ink/70">
+                    {weather.current.condition}・體感 {weather.current.apparentTemperature.toFixed(1)}°C
+                  </p>
+                </div>
+              </div>
+
+              <dl class="mt-7 grid grid-cols-2 gap-x-5 gap-y-4 text-sm sm:grid-cols-3 lg:grid-cols-2">
+                <div>
+                  <dt class="text-xs text-ink/55">今日高／低</dt>
+                  <dd class="mt-1 font-extrabold text-navy">
+                    {weather.today.maxTemperature}°／{weather.today.minTemperature}°
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-ink/55">降雨機率</dt>
+                  <dd class="mt-1 font-extrabold text-navy">{weather.today.precipitationProbability}%</dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-ink/55">風力</dt>
+                  <dd class="mt-1 font-extrabold text-navy">
+                    {beaufortLabel(weather.today.maxWindGust)}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-ink/55">紫外線</dt>
+                  <dd class="mt-1 font-extrabold text-navy">{uvWord(weather.today.uvIndexMax)}</dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-ink/55">日出</dt>
+                  <dd class="mt-1 font-extrabold text-navy">{weather.today.sunrise}</dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-ink/55">日落</dt>
+                  <dd class="mt-1 font-extrabold text-navy">{weather.today.sunset}</dd>
+                </div>
+              </dl>
+
+              <p class="mt-4 rounded-xl bg-navy/5 px-4 py-3 text-xs font-bold leading-6 text-ink/70">
+                藍調時刻約 <span class="text-navy">{weather.blueHour}</span> 前後，河面燈光倒影最完整。
+              </p>
+
+              <div class:list={["mt-6 rounded-2xl border px-5 py-4", levelStyles[advice.level]]}>
+                <p class="text-sm font-extrabold text-navy">{advice.headline}</p>
+                <p class="mt-2 text-sm leading-7 text-ink/72">{advice.summary}</p>
+              </div>
+            </div>
+
+            <div class="px-6 py-7 sm:px-8">
+              <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">7 日預報</p>
+              <ul class="mt-4 grid gap-1.5">
+                {
+                  weather.days.map((day) => (
+                    <li class="grid grid-cols-[3.4rem_1.4rem_minmax(0,1fr)_auto] items-center gap-3 rounded-xl px-3 py-2 odd:bg-sand/45">
+                      <span class="text-xs font-extrabold text-navy">
+                        {day.label}
+                        <span class="mt-0.5 block text-[0.62rem] font-bold text-ink/45">{day.shortDate}</span>
+                      </span>
+                      <WeatherGlyph glyph={day.glyph} class="h-6 w-6 text-river" />
+                      <span class="min-w-0">
+                        <span class="flex flex-wrap items-center gap-1.5">
+                          <span class="truncate text-[0.7rem] font-bold text-ink/65">{day.condition}</span>
+                          {day.riskLabel && (
+                            <span
+                              class:list={[
+                                "rounded px-1.5 py-0.5 text-[0.6rem] font-extrabold",
+                                day.risk === "danger" ? "bg-coral text-white" : "bg-gold/30 text-navy",
+                              ]}
+                            >
+                              {day.riskLabel}
+                            </span>
+                          )}
+                        </span>
+                        <span class="mt-1 block h-1 w-full overflow-hidden rounded-full bg-navy/10">
+                          <span
+                            class="block h-full rounded-full bg-river/70"
+                            style={`width:${Math.min(100, day.precipitationProbability)}%`}
+                          />
+                        </span>
+                        <span class="mt-1 block text-[0.62rem] font-bold text-ink/45">
+                          降雨 {day.precipitationProbability}%
+                        </span>
+                      </span>
+                      <span class="whitespace-nowrap text-sm font-extrabold text-navy">
+                        {day.maxTemperature}°
+                        <span class="font-bold text-ink/45">／{day.minTemperature}°</span>
+                      </span>
+                    </li>
+                  ))
+                }
+              </ul>
+
+              <div class="mt-7 grid gap-3 sm:grid-cols-2">
+                {
+                  airOutlook && (
+                    <div class="rounded-2xl border border-navy/8 bg-sand/50 p-5">
+                      <p class="text-xs font-extrabold tracking-[0.16em] text-river">空氣品質</p>
+                      <p class="mt-3 text-xl font-extrabold text-navy">{airOutlook.label}</p>
+                      <p class="mt-1.5 text-xs leading-6 text-ink/60">戶外活動指標 {airOutlook.aqi}</p>
+                    </div>
+                  )
+                }
+                {
+                  marineOutlook && (
+                    <div class="rounded-2xl border border-navy/8 bg-sand/50 p-5">
+                      <p class="text-xs font-extrabold tracking-[0.16em] text-river">港灣與水域</p>
+                      <dl class="mt-3 grid grid-cols-2 gap-3 text-xs">
+                        {marineOutlook.waveHeight !== null && (
+                          <div>
+                            <dt class="text-ink/55">港灣浪高</dt>
+                            <dd class="mt-1 font-extrabold text-navy">{marineOutlook.waveHeight.toFixed(1)} 公尺</dd>
+                          </div>
+                        )}
+                        {marineOutlook.seaTemperature !== null && (
+                          <div>
+                            <dt class="text-ink/55">海水溫度</dt>
+                            <dd class="mt-1 font-extrabold text-navy">{Math.round(marineOutlook.seaTemperature)}°C</dd>
+                          </div>
+                        )}
+                        {marineOutlook.tideDirection && (
+                          <div class="col-span-2">
+                            <dt class="text-ink/55">感潮河段潮位</dt>
+                            <dd class="mt-1 font-extrabold text-navy">
+                              {tideLabels[marineOutlook.tideDirection] ?? "變化平緩"}
+                            </dd>
+                          </div>
+                        )}
+                      </dl>
+                    </div>
+                  )
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-navy/8 px-6 py-7 sm:px-8">
+            <h3 class="text-xs font-extrabold tracking-[0.16em] text-river">今天該怎麼穿、怎麼走、帶什麼</h3>
+            <div class="mt-4 grid gap-4 md:grid-cols-3">
+              {
+                groups.map((group) => (
+                  <div class="rounded-2xl border border-navy/8 bg-sand/40 p-5">
+                    <p class="flex items-center gap-2 text-xs font-extrabold tracking-[0.14em] text-river">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="h-4 w-4"
+                        aria-hidden="true"
+                        set:html={group.icon}
+                      />
+                      {group.label}
+                    </p>
+                    <ul class="mt-4 grid gap-2.5">
+                      {(group.items.length > 0 ? group.items : [group.empty]).map((text) => (
+                        <li class="flex gap-2.5 text-sm leading-7 text-ink/78">
+                          <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-river/60" />
+                          <span>{text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))
+              }
+            </div>
+            <p class="mt-5 text-xs leading-6 text-ink/50">
+              建議依目前觀測自動產生，會隨天候即時變動；未成立的項目不會顯示。
+            </p>
+          </div>
+
+          <footer class="bg-navy px-6 py-4 text-xs leading-6 text-white/70 sm:px-8">
+            預報為即時數值模擬結果，僅供行程安排參考。颱風、豪雨、河川水位、停航與水域管制，請以
+            <a
+              href="https://www.cwa.gov.tw/V8/C/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-extrabold text-gold"
+            >
+              中央氣象署
+            </a>
+            及各營運單位當日公告為準。
+          </footer>
+        </article>
+      ) : (
+        <article class="rounded-3xl border border-navy/10 bg-white px-6 py-8 shadow-[0_1.5rem_4rem_rgba(6,27,42,.07)] sm:px-8">
+          <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">Live Weather</p>
+          <h2 id="weather-title" class="mt-2 text-2xl font-extrabold tracking-[-0.03em] text-navy sm:text-3xl">
+            愛河即時氣象與 7 日預報
+          </h2>
+          <p class="mt-4 text-sm leading-7 text-ink/70">
+            目前暫時無法取得最新觀測，請稍後重新整理；出發前也可直接查看
+            <a
+              href="https://www.cwa.gov.tw/V8/C/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-extrabold text-river"
+            >
+              中央氣象署高雄測站 ↗
+            </a>
+            的即時資訊。
+          </p>
+        </article>
+      )
+    }
+  </div>
+</section>

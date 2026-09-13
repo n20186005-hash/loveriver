@@ -1,0 +1,84 @@
+---
+import { attraction } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  id?: string;
+}
+
+const {
+  title = "Love River 愛河位置與交通",
+  description = "以下為 Love River（愛河）在 Google Maps 的實際位置。可先確認周邊道路與地標，再決定搭捷運或輕軌。",
+  id = "location",
+} = Astro.props;
+---
+
+<section class="section-pad bg-river-light" aria-labelledby={`${id}-title`} id={id}>
+  <div class="site-shell">
+    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+      <div class="max-w-2xl">
+        <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">Location · How to visit</p>
+        <h2 id={`${id}-title`} class="section-title mt-4">{title}</h2>
+        <p class="mt-5 text-base leading-8 text-ink/75">{description}</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a href={attraction.mapsDirectionsUrl} target="_blank" rel="noopener noreferrer" class="btn-primary">
+          開啟導航 <span aria-hidden="true">↗</span>
+        </a>
+        <a href="/transport/" class="btn-secondary">看交通方式</a>
+      </div>
+    </div>
+
+    <div class="mt-10 overflow-hidden rounded-[2rem] border border-navy/10 bg-white shadow-[0_2rem_5rem_rgba(6,27,42,.1)]">
+      <iframe
+        src={attraction.mapsEmbedSrc}
+        width="100%"
+        height="450"
+        class="block h-[26rem] w-full border-0 md:h-[32rem]"
+        title={`${attraction.fullName}（${attraction.localizedName}）Google 地圖位置`}
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+
+    <div class="mt-6 grid gap-3 text-sm sm:grid-cols-3">
+      <div class="rounded-2xl border border-navy/10 bg-white p-5">
+        <p class="text-xs font-extrabold tracking-[0.14em] text-river">地址</p>
+        <p class="mt-2 leading-6 text-ink/75">{attraction.addressZh}</p>
+      </div>
+      <div class="rounded-2xl border border-navy/10 bg-white p-5">
+        <p class="text-xs font-extrabold tracking-[0.14em] text-river">Plus Code</p>
+        <p class="mt-2 leading-6 text-ink/75">{attraction.plusCode}</p>
+      </div>
+      <div class="rounded-2xl border border-navy/10 bg-white p-5">
+        <p class="text-xs font-extrabold tracking-[0.14em] text-river">座標</p>
+        <p class="mt-2 leading-6 text-ink/75">
+          {attraction.latitude}, {attraction.longitude}
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-6 text-xs leading-6 text-ink/55">
+      For official updates and regional tourism information, visit{" "}
+      <a
+        href={attraction.nationalTourismUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="font-extrabold text-river"
+      >
+        {attraction.countryName} 交通部觀光署觀光資訊網 ↗
+      </a>{" "}
+      或{" "}
+      <a
+        href={attraction.govtTourismUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="font-extrabold text-river"
+      >
+        {attraction.govtTourismLabel} ↗
+      </a>
+      。
+    </p>
+  </div>
+</section>

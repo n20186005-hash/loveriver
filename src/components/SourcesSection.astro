@@ -1,0 +1,71 @@
+---
+import { sources as defaultSources, lastVerifiedLabel, type SourceItem } from "../data/sources";
+import { attraction } from "../data/site";
+
+interface Props {
+  sources?: SourceItem[];
+  title?: string;
+  description?: string;
+  verifiedLabel?: string;
+  id?: string;
+}
+
+const {
+  sources = defaultSources,
+  title = "資料來源與查核日期",
+  description = "本站景點、交通與動態資訊均以官方發布單位為主要來源；出發前請再回到原始公告確認。",
+  verifiedLabel = lastVerifiedLabel,
+  id = "sources",
+} = Astro.props;
+---
+
+<section class="bg-sand py-14" aria-labelledby={`${id}-title`} id={id}>
+  <div class="site-shell grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
+    <div>
+      <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">Sources · E-E-A-T</p>
+      <h2 id={`${id}-title`} class="section-title mt-4">{title}</h2>
+      <p class="mt-5 max-w-sm text-sm leading-7 text-ink/70">{description}</p>
+      <dl class="mt-6 grid gap-3 text-xs">
+        <div class="rounded-2xl border border-navy/10 bg-white px-4 py-3">
+          <dt class="font-extrabold text-navy">最後查核日期</dt>
+          <dd class="mt-1 text-ink/70">{verifiedLabel}</dd>
+        </div>
+        <div class="rounded-2xl border border-navy/10 bg-white px-4 py-3">
+          <dt class="font-extrabold text-navy">發現資訊有誤？</dt>
+          <dd class="mt-1 text-ink/70">
+            動態資訊（船班、活動、票價）以官方公告為準；也歡迎透過
+            <a
+              href={attraction.mapsShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-extrabold text-river">Google Maps 地點頁</a
+            >回報最新狀況。
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <div>
+      <ul class="grid gap-3 sm:grid-cols-2">
+        {
+          sources.map((source) => (
+            <li class="rounded-2xl border border-navy/10 bg-white p-5">
+              <a
+                href={source.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-sm font-extrabold text-navy no-underline hover:text-river"
+              >
+                {source.label} ↗
+              </a>
+              {source.note && <p class="mt-2 text-xs leading-6 text-ink/60">{source.note}</p>}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-5 text-[0.7rem] leading-5 text-ink/50">
+        本頁為獨立旅遊指南，並非高雄市政府、觀光局或愛之船官方售票網站。
+      </p>
+    </div>
+  </div>
+</section>
