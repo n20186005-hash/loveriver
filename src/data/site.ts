@@ -66,6 +66,12 @@ export const attraction = {
   streetAddress: "No. 188-1, Hedong Rd, Guangming Village, Qianjin District",
   addressZh: "台灣高雄市前金區光明里河東路 188-1 號",
   plusCode: "J7FQ+WM Guangming Village, Yancheng District, Kaohsiung City, Taiwan",
+  /**
+   * 愛河為線性河岸景點，市區段、愛河灣與愛河之心相隔一段距離，並無單一地址。
+   * 這組座標與地址僅作為導航參考點（靠近市區遊船段），實際目的地請依選定的分段與地標為準。
+   */
+  addressNoteZh: "愛河為線性河岸景點，以上座標與地址僅為參考導航點，實際目的地請依你選擇的分段與地標為準。",
+  addressNoteEn: "Love River is a linear waterfront, not a single point. The coordinates and address above are only a reference navigation point near the downtown boat section.",
 
   latitude: 22.6248606,
   longitude: 120.2891291,
@@ -97,14 +103,14 @@ export const attraction = {
     /** 來源標註會顯示的名稱，避免與其他景點的評分混淆 */
     subject: "Love River 愛河",
     value: 4.3,
-    reviewCount: 11660,
+    reviewCount: 11670,
     bestRating: 5,
     worstRating: 1,
     source: "Google Maps",
     sourceUrl: "https://maps.app.goo.gl/SwMZaznF1f4iXwAz9",
     /** 實際查核日期（同步更新時請一併修改） */
-    verifiedAt: "2026-09-13",
-    verifiedLabel: "2026 年 9 月 13 日",
+    verifiedAt: "2026-10-10",
+    verifiedLabel: "2026 年 10 月 10 日",
   },
 } as const;
 

@@ -1,6 +1,8 @@
 ---
 import { attraction, type RatingInfo } from "../data/site";
 
+const { addressNoteZh, addressNoteEn } = attraction;
+
 interface Props {
   variant?: "card" | "inline" | "footer";
   showAddress?: boolean;
@@ -63,6 +65,8 @@ const starsLabel = isEn
         <span class="font-extrabold text-navy">{fullName}（{localizedName}）</span>
         <br />
         {addressZh}
+        <br />
+        <span class="text-xs text-ink/55">{isEn ? addressNoteEn : addressNoteZh}</span>
       </address>
     )
   }
