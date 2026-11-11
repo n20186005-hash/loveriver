@@ -186,6 +186,18 @@ const footerSecondary = isEn
       { href: "/places/", label: "沿岸景點" },
     ];
 
+const legalLinks = isEn
+  ? [
+      { href: "/privacy-policy/", label: "Privacy policy (中文)" },
+      { href: "/terms-of-service/", label: "Terms of service (中文)" },
+      { href: "/cookie-settings/", label: "Cookie settings (中文)" },
+    ]
+  : [
+      { href: "/privacy-policy/", label: "隱私政策" },
+      { href: "/terms-of-service/", label: "服務條款" },
+      { href: "/cookie-settings/", label: "Cookie 設定" },
+    ];
+
 // 導航一律使用同一組 directions 連結，避免出現兩個不同的 Google Maps 短網址。
 const bottomNav = isEn
   ? [
@@ -240,14 +252,40 @@ const bottomNav = isEn
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage.href} />
     <meta name="theme-color" content="#09263a" />
-    <!-- Google Analytics -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
     <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-HXM22WWPKP');
+      // 預設不載入分析工具；只有訪客明確同意才啟動 GA。
+      window.enableLoveRiverAnalytics = function () {
+        if (window.loveRiverAnalyticsLoaded) return;
+        window.loveRiverAnalyticsLoaded = true;
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-HXM22WWPKP');
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP';
+        document.head.appendChild(script);
+      };
+      window.setLoveRiverAnalyticsConsent = function (choice) {
+        if (choice !== 'accepted' && choice !== 'rejected') return;
+        try { localStorage.setItem('loveriver-analytics-consent', choice); } catch (_) { /* 儲存不可用 */ }
+        if (choice === 'accepted') {
+          window.enableLoveRiverAnalytics();
+        } else {
+          // 以最佳努力清除本站 GA 第一方 Cookie；不影響必要網站快取。
+          ['_ga', '_ga_HXM22WWPKP'].forEach((name) => {
+            document.cookie = name + '=; Max-Age=0; Path=/; SameSite=Lax';
+            document.cookie = name + '=; Max-Age=0; Path=/; Domain=.loveriver.org; SameSite=Lax';
+          });
+          if (window.loveRiverAnalyticsLoaded) location.reload();
+        }
+        document.dispatchEvent(new CustomEvent('loveriver-consent-updated', { detail: choice }));
+      };
+      try {
+        if (localStorage.getItem('loveriver-analytics-consent') === 'accepted') {
+          window.enableLoveRiverAnalytics();
+        }
+      } catch (_) { /* 儲存空間不可用時維持分析停用 */ }
     </script>
     {
       jsonLd.map((item) => (
@@ -391,9 +429,35 @@ const bottomNav = isEn
               rel="noopener noreferrer"
               class="hover:text-white">{t.mapsLink}</a>
           </div>
+          <nav aria-label={isEn ? "Legal information" : "法律與隱私資訊"} class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-white/10 pt-4 text-xs font-bold text-white/70">
+            {legalLinks.map((item) => <a href={item.href} class="hover:text-white">{item.label}</a>)}
+          </nav>
         </div>
       </div>
     </footer>
+    <div id="cookie-consent-banner" class="fixed inset-x-3 bottom-20 z-[60] mx-auto hidden max-w-3xl rounded-2xl border border-white/15 bg-deep p-5 text-white shadow-2xl md:bottom-5" role="region" aria-label={isEn ? "Cookie consent" : "Cookie 同意設定"}>
+      <p class="font-extrabold">{isEn ? "Analytics preferences" : "分析 Cookie 偏好"}</p>
+      <p class="mt-2 text-sm leading-6 text-white/75">{isEn ? "We use optional Google Analytics only with your consent. Essential site and offline functions remain available without it." : "本站只在您同意後載入 Google Analytics 統計。拒絕不影響主要內容、地圖連結與離線功能。"}</p>
+      <div class="mt-4 flex flex-wrap gap-3 text-sm font-extrabold">
+        <button type="button" data-cookie-choice="accepted" class="rounded-full bg-gold px-5 py-2.5 text-deep">{isEn ? "Accept analytics" : "同意分析"}</button>
+        <button type="button" data-cookie-choice="rejected" class="rounded-full border border-white/40 px-5 py-2.5 text-white">{isEn ? "Reject" : "拒絕分析"}</button>
+        <a href="/cookie-settings/" class="self-center text-white underline underline-offset-4">{isEn ? "Settings" : "詳細設定"}</a>
+      </div>
+    </div>
+    <script is:inline>
+      (function () {
+        const banner = document.getElementById('cookie-consent-banner');
+        if (!banner) return;
+        try {
+          if (!localStorage.getItem('loveriver-analytics-consent')) banner.classList.remove('hidden');
+        } catch (_) { banner.classList.remove('hidden'); }
+        banner.querySelectorAll('[data-cookie-choice]').forEach((button) => button.addEventListener('click', () => {
+          const choice = button.getAttribute('data-cookie-choice');
+          window.setLoveRiverAnalyticsConsent?.(choice);
+          banner.classList.add('hidden');
+        }));
+      })();
+    </script>
     <nav
       class="fixed inset-x-3 bottom-3 z-50 grid h-[3.8rem] grid-cols-4 rounded-2xl border border-white/20 bg-deep/94 px-1 text-white shadow-2xl backdrop-blur-xl md:hidden"
       aria-label={t.bottomNavLabel}

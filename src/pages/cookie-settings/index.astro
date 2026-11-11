@@ -1,0 +1,87 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Cookie 設定｜高雄愛河旅遊指南"
+  description="管理 loveriver.org 的分析 Cookie 偏好，了解必要儲存、Google Analytics 和離線快取的用途，並隨時撤回同意。"
+  keywords={["Cookie 設定", "Cookie 偏好", "愛河旅遊指南隱私"]}
+  pageType="article"
+>
+  <section class="bg-deep py-16 text-white md:py-24">
+    <div class="site-shell max-w-4xl">
+      <p class="text-xs font-extrabold tracking-[0.2em] text-gold">PRIVACY · PREFERENCES</p>
+      <h1 class="mt-4 text-4xl font-extrabold tracking-tight md:text-6xl">Cookie 設定</h1>
+      <p class="mt-6 max-w-2xl text-base leading-8 text-white/75">決定是否允許非必要的網站流量分析。您可以隨時變更選擇，拒絕不會影響景點文章、交通指南或其他主要內容。</p>
+    </div>
+  </section>
+
+  <section class="section-pad bg-cream">
+    <div class="site-shell max-w-4xl">
+      <div class="rounded-3xl bg-white p-6 shadow-[0_1.5rem_4rem_rgba(6,27,42,.07)] sm:p-9">
+        <h2 class="text-2xl font-extrabold text-navy">目前的分析偏好</h2>
+        <p id="consent-status" class="mt-3 rounded-xl bg-river-light px-4 py-3 text-sm font-bold text-river" role="status" aria-live="polite">正在讀取您的設定…</p>
+
+        <div class="mt-8 space-y-6">
+          <div class="rounded-2xl border border-navy/10 p-5">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h3 class="font-extrabold text-navy">必要網站功能與偏好記錄</h3>
+                <p class="mt-2 text-sm leading-7 text-ink/70">網站傳輸、安全、基本瀏覽功能，以及記住您分析選擇的本機儲存。Service Worker 可能使用瀏覽器快取提供離線頁面。</p>
+              </div>
+              <span class="shrink-0 rounded-full bg-river-light px-3 py-1.5 text-xs font-extrabold text-river">必要</span>
+            </div>
+          </div>
+          <div class="rounded-2xl border border-navy/10 p-5">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h3 class="font-extrabold text-navy">Google Analytics 流量分析</h3>
+                <p class="mt-2 text-sm leading-7 text-ink/70">用於了解彙總訪問量、頁面使用情形與改善網站內容。預設不載入；只有在您同意後才啟動，Google 可能使用分析 Cookie。</p>
+              </div>
+              <span class="shrink-0 rounded-full bg-sand px-3 py-1.5 text-xs font-extrabold text-navy">可選</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <button id="accept-analytics" type="button" class="rounded-full bg-river px-6 py-3 text-sm font-extrabold text-white hover:bg-deep">同意分析 Cookie</button>
+          <button id="reject-analytics" type="button" class="rounded-full border border-river px-6 py-3 text-sm font-extrabold text-river hover:bg-river-light">拒絕／撤回同意</button>
+        </div>
+        <p class="mt-5 text-xs leading-6 text-ink/60">變更選擇後，分析腳本將依新設定運作；從同意改為拒絕時會重新載入頁面，以停止當次瀏覽已載入的分析工具，並嘗試清除本站常見的 Google Analytics 第一方 Cookie。</p>
+      </div>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl bg-river-light p-6">
+          <h2 class="text-xl font-extrabold text-navy">地圖與外部網站</h2>
+          <p class="mt-3 text-sm leading-7 text-ink/70">點擊 Google Maps 或載入嵌入地圖，可能由 Google 依自身政策處理資料。這與本站的 Google Analytics 同意選擇不同。</p>
+        </div>
+        <div class="rounded-2xl bg-sand p-6">
+          <h2 class="text-xl font-extrabold text-navy">清除瀏覽器資料</h2>
+          <p class="mt-3 text-sm leading-7 text-ink/70">您也可以在瀏覽器的網站資料設定刪除 Cookie、本機儲存和快取。清除後，本站會在下次造訪時重新詢問偏好。</p>
+        </div>
+      </div>
+      <p class="mt-10 text-sm text-ink/70">相關資訊：<a href="/privacy-policy/" class="font-bold text-river underline">隱私政策</a> · <a href="/terms-of-service/" class="font-bold text-river underline">服務條款</a></p>
+    </div>
+  </section>
+  <script is:inline>
+  (function () {
+    const status = document.getElementById('consent-status');
+    function update() {
+      let value = null;
+      try { value = localStorage.getItem('loveriver-analytics-consent'); } catch (_) {}
+      status.textContent = value === 'accepted' ? '目前已同意分析 Cookie。' : value === 'rejected' ? '目前已拒絕分析 Cookie。' : '尚未選擇；分析功能預設停用。';
+    }
+    document.getElementById('accept-analytics')?.addEventListener('click', () => {
+      window.setLoveRiverAnalyticsConsent?.('accepted');
+      document.getElementById('cookie-consent-banner')?.classList.add('hidden');
+      update();
+    });
+    document.getElementById('reject-analytics')?.addEventListener('click', () => {
+      window.setLoveRiverAnalyticsConsent?.('rejected');
+      document.getElementById('cookie-consent-banner')?.classList.add('hidden');
+      update();
+    });
+    update();
+  })();
+</script>
+</BaseLayout>
