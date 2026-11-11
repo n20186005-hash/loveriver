@@ -40,3 +40,11 @@ duration: "半天至一日"
 ## 怎麼取捨？
 
 兩小時只走市區段加愛河灣；半天再加駁二與大港橋；一日遊才安排展館與鹽埕用餐。景點越多不等於旅程越完整，保留日落前後的停留時間更重要。
+
+## 周邊景點詳頁
+
+- [高雄市立歷史博物館](/places/kaohsiung-history-museum/)
+- [玫瑰聖母聖殿主教座堂](/places/holy-rosary-cathedral/)
+- [中都愛河濕地公園](/places/zhongdu-wetland/)
+- [光榮碼頭](/places/guangrong-pier/)
+- [鹽埕老街區散步](/places/yancheng-old-streets/)

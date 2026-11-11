@@ -80,3 +80,11 @@ faq:
 若要跨市區段與愛河灣，停一次車後改搭輕軌或步行，通常比在每個景點重新找車位更省時間。
 
 自駕導航可直接使用 **[Google Maps 路線](https://www.google.com/maps/dir/?api=1&destination=Love+River+Kaohsiung)**，抵達後再依現場標誌選擇停車場。
+
+## 從不同出發點怎麼到愛河？
+
+- [從高雄車站出發](/transport/kaohsiung-main-station/)
+- [從高鐵左營站出發](/transport/zuoying-hsr/)
+- [從高雄小港機場出發](/transport/airport/)
+- [C10、C11、C12、C24 輕軌站點](/transport/light-rail/)
+- [愛河自駕停車與分區](/transport/parking/)

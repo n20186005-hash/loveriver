@@ -40,3 +40,10 @@ sourceUrl: "https://kcs.kcg.gov.tw/"
 ## 遇到停航怎麼辦？
 
 把遊船當成行程加分項，而不是唯一目的。若停航，市區段河岸、歷史博物館、玫瑰聖母聖殿與愛河灣仍可串成完整散步線。
+
+## 搭船前實用攻略
+
+- [愛之船船票、票價與候位](/boats/tickets/)
+- [愛之船登船地點怎麼找](/boats/boarding-location/)
+- [愛河夜遊船與夜景拍攝](/boats/night-cruise/)
+- [下雨還能搭船嗎](/boats/rain-policy/)

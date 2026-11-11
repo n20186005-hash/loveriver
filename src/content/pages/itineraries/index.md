@@ -23,3 +23,14 @@ duration: "2 小時至一日"
 ## 行程共同原則
 
 從一站進、另一站出，避免回原路。遊船當天若停航，就用河岸或場館替代，不讓整天行程失效。
+
+## 更多主題行程
+
+- [第一次去愛河](/itineraries/first-time/)
+- [捷運與輕軌一日遊](/itineraries/mrt-day-trip/)
+- [長輩友善慢遊](/itineraries/senior-friendly/)
+- [推嬰兒車親子散步](/itineraries/stroller/)
+- [高流演唱會前後](/itineraries/after-concert/)
+- [愛河清晨散步與晨跑](/itineraries/early-morning/)
+- [鹽埕晚餐與河岸夜景](/itineraries/food-and-river/)
+- [一個人遊愛河](/itineraries/solo-traveler/)
