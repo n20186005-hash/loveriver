@@ -8,38 +8,53 @@ interface Props {
   description?: string;
   verifiedLabel?: string;
   id?: string;
+  lang?: "en" | "zh-Hant-TW";
 }
 
 const {
   sources = defaultSources,
-  title = "資料來源與查核日期",
-  description = "本站景點、交通與動態資訊均以官方發布單位為主要來源；出發前請再回到原始公告確認。",
+  title,
+  description,
   verifiedLabel = lastVerifiedLabel,
   id = "sources",
+  lang = "zh-Hant-TW",
 } = Astro.props;
+const isEn = lang === "en";
+const heading = title ?? (isEn ? "Sources and verification" : "資料來源與查核日期");
+const intro = description ?? (isEn ? "We rely on public authorities and operators for attraction, transport and changing travel information. Check the original notice before travelling." : "本站景點、交通與動態資訊均以官方發布單位為主要來源；出發前請再回到原始公告確認。");
+const englishSourceLabels: Record<string, [string,string]> = {
+  "高雄旅遊網－愛河": ["Kaohsiung Travel – Love River", "Official city tourism information and visitor access."],
+  "高雄旅遊網－愛河之心": ["Kaohsiung Travel – Heart of Love River", "Official introduction to the twin-lake riverside landscape."],
+  "高雄市輪船股份有限公司": ["Kaohsiung City Shipping Co.", "Love Boat schedules, fares and service notices."],
+  "高雄捷運公司": ["Kaohsiung Rapid Transit Corporation", "MRT and light-rail routes, stations and transfers."],
+  "高雄流行音樂中心": ["Kaohsiung Music Center", "Venue events and opening information."],
+  "駁二藝術特區": ["Pier-2 Art Center", "Exhibitions and public art information."],
+  "台灣交通部觀光署": ["Taiwan Tourism Administration", "National travel and transport information."],
+  "Google Maps－Love River 愛河": ["Google Maps – Love River", "Place location, visitor rating and current status."],
+};
 ---
 
 <section class="bg-sand py-14" aria-labelledby={`${id}-title`} id={id}>
   <div class="site-shell grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
     <div>
       <p class="text-[0.68rem] font-extrabold tracking-[0.18em] text-river">Sources · E-E-A-T</p>
-      <h2 id={`${id}-title`} class="section-title mt-4">{title}</h2>
-      <p class="mt-5 max-w-sm text-sm leading-7 text-ink/70">{description}</p>
+      <h2 id={`${id}-title`} class="section-title mt-4">{heading}</h2>
+      <p class="mt-5 max-w-sm text-sm leading-7 text-ink/70">{intro}</p>
       <dl class="mt-6 grid gap-3 text-xs">
         <div class="rounded-2xl border border-navy/10 bg-white px-4 py-3">
-          <dt class="font-extrabold text-navy">最後查核日期</dt>
-          <dd class="mt-1 text-ink/70">{verifiedLabel}</dd>
+          <dt class="font-extrabold text-navy">{isEn ? "Last verified" : "最後查核日期"}</dt>
+          <dd class="mt-1 text-ink/70">{isEn && verifiedLabel === lastVerifiedLabel ? "13 September 2026" : verifiedLabel}</dd>
         </div>
         <div class="rounded-2xl border border-navy/10 bg-white px-4 py-3">
-          <dt class="font-extrabold text-navy">發現資訊有誤？</dt>
+          <dt class="font-extrabold text-navy">{isEn ? "Found outdated information?" : "發現資訊有誤？"}</dt>
           <dd class="mt-1 text-ink/70">
-            動態資訊（船班、活動、票價）以官方公告為準；也歡迎透過
+            {isEn ? "Schedules, events and fares may change. Check operator notices or the " : "動態資訊（船班、活動、票價）以官方公告為準；也歡迎透過"}
             <a
               href={attraction.mapsShareUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="font-extrabold text-river">Google Maps 地點頁</a
-            >回報最新狀況。
+              class="font-extrabold text-river">{isEn ? "Google Maps place page" : "Google Maps 地點頁"}</a
+            >{isEn ? " for the latest place information." : "回報最新狀況。"}
           </dd>
         </div>
       </dl>
@@ -56,15 +71,15 @@ const {
                 rel="noopener noreferrer"
                 class="text-sm font-extrabold text-navy no-underline hover:text-river"
               >
-                {source.label} ↗
+                {isEn ? (englishSourceLabels[source.label]?.[0] ?? source.label) : source.label} ↗
               </a>
-              {source.note && <p class="mt-2 text-xs leading-6 text-ink/60">{source.note}</p>}
+              {source.note && <p class="mt-2 text-xs leading-6 text-ink/60">{isEn ? (englishSourceLabels[source.label]?.[1] ?? (source.note.match(/[\u3400-\u9fff]/) ? "Original source and supporting information for this guide." : source.note)) : source.note}</p>}
             </li>
           ))
         }
       </ul>
       <p class="mt-5 text-[0.7rem] leading-5 text-ink/50">
-        本頁為獨立旅遊指南，並非高雄市政府、觀光局或愛之船官方售票網站。
+        {isEn ? "This independent travel guide is not affiliated with the city government, tourism authority or official Love Boat ticketing service." : "本頁為獨立旅遊指南，並非高雄市政府、觀光局或愛之船官方售票網站。"}
       </p>
     </div>
   </div>

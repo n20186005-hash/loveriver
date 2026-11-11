@@ -1,0 +1,80 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Cookie Settings | Love River Guide"
+  description="Manage optional analytics cookies on loveriver.org, see what local storage does and withdraw your consent at any time."
+  keywords={["Love River cookie settings", "analytics consent", "privacy preferences"]}
+  pageType="article"
+  lang="en"
+  alternates={[
+    { hreflang: "en", href: "https://www.loveriver.org/en/cookie-settings/" },
+    { hreflang: "zh-Hant-TW", href: "https://www.loveriver.org/cookie-settings/" },
+    { hreflang: "x-default", href: "https://www.loveriver.org/cookie-settings/" },
+  ]}
+  langSwitch={{ href: "/cookie-settings/", label: "中文" }}
+>
+  <section class="bg-deep py-16 text-white md:py-24">
+    <div class="site-shell max-w-4xl">
+      <p class="text-xs font-extrabold tracking-[0.2em] text-gold">PRIVACY · PREFERENCES</p>
+      <h1 class="mt-4 text-4xl font-extrabold tracking-tight md:text-6xl">Cookie settings</h1>
+      <p class="mt-6 max-w-2xl text-base leading-8 text-white/75">Choose whether to allow optional website analytics. You can change your choice at any time. Rejecting analytics does not affect guides, transport details or the site's main content.</p>
+    </div>
+  </section>
+  <section class="section-pad bg-cream">
+    <div class="site-shell max-w-4xl">
+      <div class="rounded-3xl bg-white p-6 shadow-[0_1.5rem_4rem_rgba(6,27,42,.07)] sm:p-9">
+        <h2 class="text-2xl font-extrabold text-navy">Your analytics preference</h2>
+        <p id="consent-status" class="mt-3 rounded-xl bg-river-light px-4 py-3 text-sm font-bold text-river" role="status" aria-live="polite">Loading your preference…</p>
+        <div class="mt-8 space-y-6">
+          <div class="rounded-2xl border border-navy/10 p-5">
+            <h3 class="font-extrabold text-navy">Essential site functions and stored preferences</h3>
+            <p class="mt-2 text-sm leading-7 text-ink/70">Page delivery, basic security, local storage remembering your analytics choice and possible service-worker caching for offline pages. These functions do not require analytics consent.</p>
+          </div>
+          <div class="rounded-2xl border border-navy/10 p-5">
+            <h3 class="font-extrabold text-navy">Google Analytics – optional</h3>
+            <p class="mt-2 text-sm leading-7 text-ink/70">Aggregated visits, device information and page use help improve the guide. The analytics script is off by default and runs only after consent; Google may then set analytical cookies.</p>
+          </div>
+        </div>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <button id="accept-analytics" type="button" class="rounded-full bg-river px-6 py-3 text-sm font-extrabold text-white hover:bg-deep">Accept analytics</button>
+          <button id="reject-analytics" type="button" class="rounded-full border border-river px-6 py-3 text-sm font-extrabold text-river hover:bg-river-light">Reject / withdraw consent</button>
+        </div>
+        <p class="mt-5 text-xs leading-6 text-ink/60">If you withdraw consent after analytics has loaded, the site reloads to stop the active script and attempts to clear common first-party Google Analytics cookies.</p>
+      </div>
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl bg-river-light p-6">
+          <h2 class="text-xl font-extrabold text-navy">Maps and external services</h2>
+          <p class="mt-3 text-sm leading-7 text-ink/70">Opening Google Maps or an embedded map may share technical information with Google under its own policies, independently of this analytics preference.</p>
+        </div>
+        <div class="rounded-2xl bg-sand p-6">
+          <h2 class="text-xl font-extrabold text-navy">Clear browser data</h2>
+          <p class="mt-3 text-sm leading-7 text-ink/70">You can also delete cookies, local storage and caches through your browser's site-data controls. If you clear the preference, we will ask again on a future visit.</p>
+        </div>
+      </div>
+      <p class="mt-10 text-sm text-ink/70">Related pages: <a href="/en/privacy-policy/" class="font-bold text-river underline">Privacy policy</a> · <a href="/en/terms-of-service/" class="font-bold text-river underline">Terms of service</a></p>
+    </div>
+  </section>
+  <script is:inline>
+    (function () {
+      const status = document.getElementById('consent-status');
+      function update() {
+        let value = null;
+        try { value = localStorage.getItem('loveriver-analytics-consent'); } catch (_) {}
+        if (status) status.textContent = value === 'accepted' ? 'Analytics accepted.' : value === 'rejected' ? 'Analytics rejected.' : 'No preference yet; analytics is disabled by default.';
+      }
+      document.getElementById('accept-analytics')?.addEventListener('click', () => {
+        window.setLoveRiverAnalyticsConsent?.('accepted');
+        document.getElementById('cookie-consent-banner')?.classList.add('hidden');
+        update();
+      });
+      document.getElementById('reject-analytics')?.addEventListener('click', () => {
+        window.setLoveRiverAnalyticsConsent?.('rejected');
+        document.getElementById('cookie-consent-banner')?.classList.add('hidden');
+        update();
+      });
+      update();
+    })();
+  </script>
+</BaseLayout>

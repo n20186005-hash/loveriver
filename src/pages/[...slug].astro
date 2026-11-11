@@ -269,7 +269,7 @@ const schema = [
           {data.station && <span class="rounded-full border border-white/12 bg-white/5 px-4 py-2.5">⌖ {data.station}</span>}
           {data.duration && <span class="rounded-full border border-white/12 bg-white/5 px-4 py-2.5">◷ {data.duration}</span>}
         </div>
-        {data.mapsUrl && <a href={data.mapsUrl} target="_blank" rel="noopener noreferrer" class="mt-6 inline-flex rounded-full bg-white px-5 py-3 text-sm font-extrabold text-deep no-underline hover:bg-gold">查看位置與導航 ↗</a>}
+        {data.mapsUrl && <a href={data.mapsUrl} target="_blank" rel="noopener noreferrer" class="mt-6 inline-flex rounded-full bg-white px-5 py-3 text-sm font-extrabold text-deep no-underline hover:bg-gold">{isEn ? "View location & directions ↗" : "查看位置與導航 ↗"}</a>}
       </div>
       <div class="relative">
         <div class="absolute -inset-6 rounded-full bg-river/20 blur-3xl" aria-hidden="true"></div>
@@ -326,12 +326,12 @@ const schema = [
           )
         }
         <Content />
-        {data.gallery.length > 0 && <section class="mt-12" aria-label="景點實景照片">
-          <h2>景點實景與觀察角度</h2>
+        {data.gallery.length > 0 && <section class="mt-12" aria-label={isEn ? "Photos of the attraction" : "景點實景照片"}>
+          <h2>{isEn ? "Photos and viewpoints" : "景點實景與觀察角度"}</h2>
           <div class="mt-5 grid gap-5 sm:grid-cols-2">
             {data.gallery.map((photo) => <figure class="overflow-hidden rounded-2xl border border-navy/10 bg-white">
               <img src={`/images/${photo.src}`} alt={photo.alt} loading="lazy" decoding="async" width="960" height="640" class="aspect-[4/3] w-full object-cover" />
-              <figcaption class="px-4 py-3 text-xs leading-5 text-ink/65">{photo.alt} · <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer" class="text-river">照片來源</a></figcaption>
+              <figcaption class="px-4 py-3 text-xs leading-5 text-ink/65">{photo.alt} · <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer" class="text-river">{isEn ? "Photo source" : "照片來源"}</a></figcaption>
             </figure>)}
           </div>
         </section>}
@@ -365,5 +365,5 @@ const schema = [
     )
   }
 
-  <SourcesSection sources={pageSources} />
+  <SourcesSection sources={pageSources} lang={locale} />
 </BaseLayout>

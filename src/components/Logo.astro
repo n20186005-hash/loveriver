@@ -2,11 +2,13 @@
 interface Props {
   compact?: boolean;
   light?: boolean;
+  lang?: "zh-Hant-TW" | "en";
 }
-const { compact = false, light = false } = Astro.props;
+const { compact = false, light = false, lang = "zh-Hant-TW" } = Astro.props;
+const isEn = lang === "en";
 ---
 
-<a class="group flex items-center gap-2.5 no-underline" href="/" aria-label="LOVE RIVER 高雄愛河指南－首頁">
+<a class="group flex items-center gap-2.5 no-underline" href={isEn ? "/en/" : "/"} aria-label={isEn ? "Love River Guide – Home" : "LOVE RIVER 高雄愛河指南－首頁"}>
   <svg
     aria-hidden="true"
     class="h-9 w-9 shrink-0"
@@ -28,7 +30,7 @@ const { compact = false, light = false } = Astro.props;
           LOVE RIVER
         </span>
         <span class:list={["mt-1 block text-[0.68rem] font-bold tracking-[0.18em]", light ? "text-white/65" : "text-ink/55"]}>
-          高雄愛河指南
+          {isEn ? "KAOHSIUNG GUIDE" : "高雄愛河指南"}
         </span>
       </span>
     )

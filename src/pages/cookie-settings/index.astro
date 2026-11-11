@@ -7,6 +7,12 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
   description="管理 loveriver.org 的分析 Cookie 偏好，了解必要儲存、Google Analytics 和離線快取的用途，並隨時撤回同意。"
   keywords={["Cookie 設定", "Cookie 偏好", "愛河旅遊指南隱私"]}
   pageType="article"
+  alternates={[
+    { hreflang: "zh-Hant-TW", href: "https://www.loveriver.org/cookie-settings/" },
+    { hreflang: "en", href: "https://www.loveriver.org/en/cookie-settings/" },
+    { hreflang: "x-default", href: "https://www.loveriver.org/cookie-settings/" },
+  ]}
+  langSwitch={{ href: "/en/cookie-settings/", label: "EN" }}
 >
   <section class="bg-deep py-16 text-white md:py-24">
     <div class="site-shell max-w-4xl">
