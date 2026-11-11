@@ -3,13 +3,32 @@ title: "玫瑰聖母聖殿主教座堂：愛河旁的歷史教堂"
 description: "高雄玫瑰聖母聖殿主教座堂建築特色、參訪禮儀、交通與愛河順遊建議。"
 summary: "愛河旁的歷史信仰地標，適合與市區河岸安排在同一段步行行程；參訪須尊重禮拜活動。"
 image: "downtown"
-imageAlt: "高雄愛河市區景觀，教堂位於附近街區"
+heroPhoto: "cathedral-front.jpg"
+imageAlt: "玫瑰聖母聖殿主教座堂夜間正面尖塔與玫瑰窗實景"
+mapsUrl: "https://www.google.com/maps/search/?api=1&query=Holy%20Rosary%20Cathedral%20Kaohsiung%20No.%20151%20Wufu%203rd%20Road"
+gallery:
+  - src: "cathedral-front.jpg"
+    alt: "玫瑰聖母聖殿主教座堂正面尖塔及哥德式立面"
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Holy_Rosary_Cathedral_Kaohsiung.jpg"
+  - src: "cathedral-interior.jpg"
+    alt: "玫瑰聖母聖殿主教座堂中殿與拱頂空間"
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Interior_of_Holy_Rosary_Cathedral_of_Kaohsiung_01_20260513.jpg"
 type: "place"
 keywords: ["玫瑰聖母聖殿主教座堂", "愛河教堂"]
 tags: ["教堂", "歷史建築"]
+address: "高雄市苓雅區五福三路151號"
 duration: "外觀約 15–30 分鐘"
 sourceLabel: "高雄旅遊網－玫瑰聖母聖殿主教座堂"
 sourceUrl: "https://khh.travel/zh-tw/attractions/detail/239/"
+faq:
+  - question: "玫瑰聖母聖殿主教座堂可以入內嗎？"
+    answer: "高雄旅遊網列一般參觀時段，但教堂仍是宗教禮拜場所，入內與彌撒安排請遵照教區和現場指示。"
+  - question: "玫瑰聖母堂有什麼建築特色？"
+    answer: "哥德式風格融合部分羅馬式元素，代表細節包括尖塔、拱窗、玫瑰花窗與室內交叉拱肋。"
+  - question: "可以和愛河排在同一條路線嗎？"
+    answer: "可以，教堂位於愛河附近街區，適合先看外觀，再往市區河岸及歷史博物館步行。"
+  - question: "教堂內可以拍照嗎？"
+    answer: "請以教堂現場規則為準，禮拜時不要使用閃光燈、腳架或妨礙信眾。"
 ---
 
 ## 關於教堂
@@ -29,3 +48,34 @@ sourceUrl: "https://khh.travel/zh-tw/attractions/detail/239/"
 宗教場所並非全天候開放的觀光展館。彌撒、活動及參觀規範請參考現場與管理單位公告。更多背景可見 [高雄旅遊網](https://khh.travel/zh-tw/attractions/detail/239/)。
 
 [Google Maps－玫瑰聖母聖殿主教座堂](https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E9%9B%84%E7%8E%AB%E7%91%B0%E8%81%96%E6%AF%8D%E8%81%96%E6%AE%BF%E4%B8%BB%E6%95%99%E5%BA%A7%E5%A0%82)
+
+## 歷史、管理主體與宗教文化
+
+玫瑰聖母聖殿主教座堂的信仰歷史可追溯至 1859 年，是臺灣近代天主教發展的重要據點。今日是**天主教高雄教區主教座堂**，持續作為禮拜與信仰生活場所。建築上的清領時期奉旨碑，以及宗教徽飾，讓旅客能從一棟教堂讀出地方與宗教歷史的交會。
+
+## 建築特色：從外立面看到室內
+
+外觀以哥德式建築語彙為主，融合部分羅馬式元素。中央尖塔向上伸展，拱形窗櫺與玫瑰花窗形成節奏；若獲准入內，可觀察中殿與兩側通廊、成對立柱與交叉拱肋。建議先從較遠處看整體，再近看正門與花窗，最後留意室內光線如何穿過窗戶。
+
+## 基本資訊、時間與參觀費用
+
+| 項目 | 內容 |
+| --- | --- |
+| 名稱 | 玫瑰聖母聖殿主教座堂／Holy Rosary Cathedral |
+| 地址 | 高雄市苓雅區五福三路151號 |
+| 管理 | 天主教高雄教區 |
+| 參觀時段 | 高雄旅遊網列 09:00–12:00、14:00–17:00，週日不開放一般觀光參觀 |
+| 費用 | 外觀自由欣賞；教會活動或入內安排依現場規範 |
+| 停留 | 外觀約 20–30 分鐘，入內另視開放情況 |
+
+## 交通與推薦步行路線
+
+請以**玫瑰聖母聖殿主教座堂**全名和五福三路151號導航，不要使用愛河的通用座標。從附近捷運站或市區愛河河岸步行時，依道路和行人穿越道規劃。半日順遊可採「教堂外觀 → 愛河市區段 → [高雄市立歷史博物館](/places/kaohsiung-history-museum/) → 鹽埕用餐」順序。
+
+## 拍照位置、禮儀與親子觀察
+
+正面稍遠處適合完整收進尖塔與兩側立面；側前方則能拍出深度。夜間照明可能有變化，不應把某種燈色當成固定。帶小朋友可比較尖拱、圓拱與玻璃花窗；入內時保持安靜，不在彌撒時穿越信眾或使用閃光燈。站在車道拍建築非常危險，請從合法人行空間取景。
+
+## 周邊安排
+
+教堂與愛河河岸、鹽埕歷史街區適合安排同一個下午。若希望傍晚看河面燈光，先完成教堂外觀，再接 [愛河市區散步](/areas/downtown-walk/)；住宿可考慮前金和捷運橘線沿線。[住宿指南](/hotels/)。

@@ -3,14 +3,33 @@ title: "光榮碼頭怎麼玩？愛河灣夕陽與輕軌 C10 攻略"
 description: "高雄光榮碼頭位置、港灣夕陽、輕軌交通與高流散步路線，適合愛河灣初訪。"
 summary: "從 C10 光榮碼頭下車，先看開闊港灣，再沿水岸走到高流與真愛碼頭。"
 image: "bay"
-imageAlt: "高雄愛河灣港景"
+heroPhoto: "pier-view.jpg"
+imageAlt: "高雄光榮碼頭實景、港灣水面與城市天際線"
+mapsUrl: "https://www.google.com/maps/search/?api=1&query=Glory%20Pier%20Kaohsiung%20Haibian%20Road%20Xintian%20Road"
+gallery:
+  - src: "pier-view.jpg"
+    alt: "光榮碼頭港面、廣場與城市建築"
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Glory_Pier_in_Kaohsiung_Port%2C_Taiwan.JPG"
+  - src: "pier-sunset.jpg"
+    alt: "由光榮碼頭望向高雄流行音樂中心的夕陽"
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Kaohsiung_Music_Center_with_sunset_photographed_from_Glory_Pier.jpg"
 type: "place"
 keywords: ["光榮碼頭", "光榮碼頭輕軌", "光榮碼頭夕陽"]
 tags: ["碼頭", "夕陽", "愛河灣"]
 station: "C10 光榮碼頭"
+address: "高雄市苓雅區海邊路與新田路口"
 duration: "30–60 分鐘"
-sourceLabel: "高雄捷運 C10 站點資訊"
-sourceUrl: "https://www.krtc.com.tw/KLRT/"
+sourceLabel: "高雄旅遊網－光榮碼頭"
+sourceUrl: "https://khh.travel/zh-tw/attractions/detail/81/"
+faq:
+  - question: "光榮碼頭在哪個輕軌站下車？"
+    answer: "搭乘高雄輕軌至 C10 光榮碼頭站，再依碼頭專屬地圖步行前往。"
+  - question: "光榮碼頭可以看夕陽嗎？"
+    answer: "港灣視野開闊，適合看夕照與藍調時刻；日落方向與能見度依季節天氣而變。"
+  - question: "光榮碼頭和真愛碼頭一樣嗎？"
+    answer: "不是，兩者同在愛河灣一帶，分別對應不同輕軌站點；請用景點全名導航。"
+  - question: "光榮碼頭要買門票嗎？"
+    answer: "公共碼頭觀景區一般可自由步行；特定活動、船舶服務或管制區域另依公告。"
 ---
 
 ## 光榮碼頭適合什麼行程
@@ -28,3 +47,37 @@ sourceUrl: "https://www.krtc.com.tw/KLRT/"
 ## 交通與導航
 
 [Google Maps－光榮碼頭](https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E9%9B%84%E5%85%89%E6%A6%AE%E7%A2%BC%E9%A0%AD)。可搭配 [愛河灣完整玩法](/areas/love-river-bay/) 與 [輕軌站點指南](/transport/light-rail/)。
+
+## 光榮碼頭的港口歷史與管理
+
+光榮碼頭位於愛河河口和高雄港交界。高雄旅遊網記載，這裡原是高雄港第13號碼頭，曾肩負金馬人員與軍事物資運輸任務，後轉型為民眾共享的港灣遊憩空間。現為高雄港區公共水岸的一部分，碼頭及周邊活動依港務與地方管理單位公告；港口作業區不可自行進入。
+
+## 港灣設計與特色觀察
+
+這裡的主角不是單一室內建築，而是開闊的水面、碼頭線條、城市天際線與高流建築群。站在岸邊可比較城市高樓的垂直線條與港口水平線，傍晚則觀察天空和水面的亮度變化。光榮碼頭也能作為理解高雄從軍事與物流港區轉向文化休閒水岸的觀察點。
+
+## 開放、費用與基本資訊
+
+| 項目 | 內容 |
+| --- | --- |
+| 名稱 | 光榮碼頭（Glory Pier） |
+| 地址 | 高雄市苓雅區海邊路與新田路口 |
+| 交通 | 輕軌 C10 光榮碼頭站 |
+| 開放 | 高雄旅遊網列公共區域全天候開放，活動與港務管制依公告 |
+| 費用 | 一般港邊步行免費；船舶、展演另計 |
+| 建議停留 | 30–60 分鐘，夕陽與夜景可更久 |
+
+## 建議單向散步路線
+
+1. 於 C10 光榮碼頭站下車，依指標抵達港邊觀景區。
+2. 先在光榮碼頭觀察港面與船舶，辨認對岸建築輪廓。
+3. 向 [高雄流行音樂中心](/places/kaohsiung-music-center/) 的水岸區前進，拍建築群與水面。
+4. 延伸到真愛碼頭，若還有體力可往駁二方向走，最後從另一個輕軌站離開。
+
+## 拍照機位與夜間安全
+
+碼頭開闊處適合拍全景，靠高流方向的沿岸可讓建築與港面同框；黃昏前後的藍調光線尤其容易呈現層次。海風可能較強，固定帽子和器材。請勿跨越護欄、靠近船舶繫泊設備或進入封閉區；夜間依照明步道行走。
+
+## 親子、用餐與住宿
+
+家庭旅客可把光榮碼頭當短程觀景點，再到高流或駁二周邊找室內展覽與餐飲。若準備參加演唱會，先看 [高流前後行程](/itineraries/after-concert/)；住宿選擇可考慮輕軌或捷運轉乘便利的市區區域。

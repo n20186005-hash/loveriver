@@ -65,6 +65,14 @@ const featuredPlaces = [
   { title: "駁二藝術特區", tag: "倉庫與展覽", image: "pier2", alt: "駁二藝術特區 near Love River 愛河", href: "/places/pier-2-art-center/" },
 ];
 
+const neighborhoodVisits = [
+  { title: "高雄市立歷史博物館", label: "舊市政府・城市記憶", image: "museum-front.jpg", href: "/places/kaohsiung-history-museum/", detail: "認識高雄舊市府古蹟、館藏展覽與愛河歷史。" },
+  { title: "玫瑰聖母聖殿主教座堂", label: "哥德式建築・宗教文化", image: "cathedral-front.jpg", href: "/places/holy-rosary-cathedral/", detail: "欣賞尖塔、玫瑰花窗與百年信仰記憶。" },
+  { title: "中都愛河濕地公園", label: "生態濕地・親子觀察", image: "wetland-view.jpg", href: "/places/zhongdu-wetland/", detail: "走訪木橋、紅樹林與河岸水鳥棲地。" },
+  { title: "光榮碼頭", label: "港灣歷史・夕陽", image: "pier-view.jpg", href: "/places/guangrong-pier/", detail: "從軍事碼頭歷史走向高流港景與夕照。" },
+  { title: "鹽埕老街區", label: "老市場・港都街屋", image: "yancheng-market.jpg", href: "/places/yancheng-old-streets/", detail: "市場、騎樓和老招牌串起港都日常。" },
+];
+
 const schema = [
   {
     "@context": "https://schema.org",
@@ -343,6 +351,34 @@ const alternates = [
             </a>
           ))
         }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad bg-sand" id="nearby-visits" aria-labelledby="nearby-visits-title">
+    <div class="site-shell">
+      <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div>
+          <p class="text-xs font-extrabold tracking-[0.18em] text-river">NEARBY · WALK · CULTURE</p>
+          <h2 id="nearby-visits-title" class="section-title mt-3">周邊游覽<br />從愛河走進高雄的故事</h2>
+          <p class="mt-4 max-w-2xl text-sm leading-7 text-ink/70">歷史建築、濕地生態、港灣夕照與鹽埕街區。選一個景點深入閱讀，再搭配愛河行程，不必盲目走回頭路。</p>
+        </div>
+        <a href="/places/" class="btn-secondary self-start">查看全部沿岸景點 →</a>
+      </div>
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {neighborhoodVisits.map((place) => <a href={place.href} class="group overflow-hidden rounded-[1.7rem] bg-white text-ink no-underline shadow-[0_1.5rem_4rem_rgba(6,27,42,.07)] transition hover:-translate-y-1 hover:shadow-xl">
+          <div class="aspect-[16/10] overflow-hidden bg-river-light">
+            <img src={`/images/${place.image}`} alt={`${place.title}實景照片`} width="960" height="640" loading="lazy" decoding="async" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+          </div>
+          <div class="p-6">
+            <p class="text-xs font-extrabold tracking-wider text-river">{place.label}</p>
+            <div class="mt-2 flex items-start justify-between gap-3">
+              <h3 class="text-xl font-extrabold text-navy">{place.title}</h3>
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-river/20 text-river transition group-hover:bg-river group-hover:text-white">↗</span>
+            </div>
+            <p class="mt-3 text-sm leading-7 text-ink/70">{place.detail}</p>
+          </div>
+        </a>)}
       </div>
     </div>
   </section>
