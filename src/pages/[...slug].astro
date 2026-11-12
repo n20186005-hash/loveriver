@@ -16,7 +16,7 @@ export async function getStaticPaths() {
   const entries = await getCollection("pages");
   const ids = new Set(entries.map((entry) => entry.id.replace(/\/index$/, "")));
 
-  return entries.map((entry) => {
+  return entries.filter((entry) => entry.id !== "en/index").map((entry) => {
     const baseId = entry.id.replace(/\/index$/, "");
     const isEn = baseId === "en" || baseId.startsWith("en/");
     // 英文版路徑為 /en/...；中文對照頁則去掉 en/ 前綴還原。

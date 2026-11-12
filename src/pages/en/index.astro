@@ -1,0 +1,147 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Picture from "../../components/Picture.astro";
+import GoogleRating from "../../components/GoogleRating.astro";
+import { site, attraction } from "../../data/site";
+
+const abs = (path: string) => new URL(path, site.url).href;
+const alternates = [
+  { hreflang: "zh-Hant-TW", href: abs("/") },
+  { hreflang: "en", href: abs("/en/") },
+  { hreflang: "x-default", href: abs("/") },
+];
+const areas = [
+  { number: "01", title: "Downtown Love River", label: "Best for a first visit", desc: "The classic riverfront at Ambassador Pier, with Love Boat cruises, gondolas and night reflections.", station: "O4 Cianjin / O2 Yanchengpu", image: "downtown", href: "/en/areas/downtown-love-river/" },
+  { number: "02", title: "Love River Bay", label: "Architecture & sunset", desc: "An open harbor walk connecting Love Pier, Glory Pier and Kaohsiung Music Center.", station: "C11 Love Pier / C10 Glory Pier", image: "bay", href: "/en/areas/love-river-bay/" },
+  { number: "03", title: "Heart of Love River", label: "Nature & slow travel", desc: "Two interconnected lakes farther upstream, ideal for cycling, jogging and a quieter evening.", station: "C24 Heart of Love River", image: "heart", href: "/en/areas/heart-of-love-river/" },
+];
+const itineraries = [
+  { icon: "◷", title: "I have two hours", desc: "Walk from the downtown river toward the harbor and save the best lights for last.", href: "/en/itineraries/2-hour/" },
+  { icon: "☼", title: "I have half a day", desc: "Yancheng food, Pier-2, Dagang Bridge and a harbor sunset.", href: "/en/itineraries/half-day/" },
+  { icon: "☾", title: "I want night photos", desc: "Blue hour, water reflections and practical camera positions.", href: "/en/best-time-to-visit/" },
+  { icon: "♡", title: "A romantic walk", desc: "A relaxed route for two with time for a boat trip.", href: "/en/itineraries/couple/" },
+  { icon: "⌁", title: "Visiting with children", desc: "Shorter walks, light-rail breaks and open waterfront spaces.", href: "/en/itineraries/family/" },
+  { icon: "☂", title: "Rainy-day alternatives", desc: "Use indoor galleries, the music center and MRT to stay flexible.", href: "/en/itineraries/rainy-day/" },
+];
+const featuredPlaces = [
+  { title: "Kaohsiung Music Center", tag: "Harbor landmark", image: "bay", href: "/en/places/kaohsiung-music-center/" },
+  { title: "Dagang Bridge", tag: "Harbor walk", image: "dagang", href: "/en/places/dagou-bridge/" },
+  { title: "Pier-2 Art Center", tag: "Warehouses & exhibitions", image: "pier2", href: "/en/places/pier-2-art-center/" },
+];
+const nearbyPlaces = [
+  { title: "Kaohsiung Museum of History", label: "Old City Hall · City heritage", image: "museum-front.jpg", href: "/en/places/kaohsiung-history-museum/", detail: "Discover the former city hall, historical exhibitions and the city's riverside past." },
+  { title: "Holy Rosary Cathedral", label: "Gothic design · Faith", image: "cathedral-front.jpg", href: "/en/places/holy-rosary-cathedral/", detail: "Look for its pointed spire, rose window and long Catholic heritage." },
+  { title: "Zhongdu Wetlands Park", label: "Wetlands · Wildlife", image: "wetland-view.jpg", href: "/en/places/zhongdu-wetland/", detail: "Explore timber walkways, wetland plants and bird habitats." },
+  { title: "Glory Pier", label: "Port history · Sunset", image: "pier-view.jpg", href: "/en/places/guangrong-pier/", detail: "A former working pier with wide harbor and music-center views." },
+  { title: "Yancheng Historic Streets", label: "Markets · Old shopfronts", image: "yancheng-market.jpg", href: "/en/places/yancheng-old-streets/", detail: "Markets, shaded arcades and older signs reveal everyday harbor-city life." },
+];
+const faq = [
+  { question: "Is Love River free?", answer: "The public riverside walks are free. Boat cruises, exhibitions and some special events have separate tickets." },
+  { question: "Which station should I use?", answer: "For downtown Love River, use MRT O4 Cianjin or O2 Yanchengpu. For the harbor use light rail C10–C12, and for Heart of Love River use C24." },
+  { question: "What is the best time to visit?", answer: "Arrive 45–60 minutes before sunset to see daylight, blue hour and illuminated reflections in one walk." },
+  { question: "How long should I allow?", answer: "Two hours is enough for a simple walk; plan half a day if adding a cruise, museum or Pier-2." },
+];
+const schema = [{
+  "@context": "https://schema.org", "@type": "TouristDestination", "@id": "https://loveriver.org/#destination", name: "Love River Kaohsiung",
+  alternateName: "Love River", description: "Kaohsiung's central urban river and harbor waterfront, including downtown Love River, Love River Bay and Heart of Love River.",
+  url: abs("/en/"), geo: { "@type": "GeoCoordinates", latitude: attraction.latitude, longitude: attraction.longitude },
+}];
+---
+
+<BaseLayout lang="en" title="Love River Kaohsiung Travel Guide | Night Views, Boats & Attractions" description="Plan a visit to Kaohsiung's Love River with the right stations, boat cruises, riverside attractions, sunset viewpoints and easy itineraries." keywords={["Love River Kaohsiung", "Love River Taiwan", "Love River boat", "Kaohsiung night views"]} schema={schema} alternates={alternates} langSwitch={{ href: "/", label: "中文" }}>
+  <section class="relative isolate min-h-[calc(100svh-4.8rem)] overflow-hidden bg-deep text-white">
+    <Picture name="hero" alt="Love River at night with golden reflections on the water in Kaohsiung" width={1280} height={851} loading="eager" fetchpriority="high" class="absolute inset-0 h-full w-full object-cover object-center" />
+    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,27,42,.96)_0%,rgba(6,27,42,.76)_43%,rgba(6,27,42,.22)_78%,rgba(6,27,42,.5)_100%)]"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(0deg,rgba(6,27,42,.78)_0%,transparent_42%)]"></div>
+    <div class="site-shell relative z-10 grid min-h-[calc(100svh-4.8rem)] items-end gap-12 pb-10 pt-24 lg:grid-cols-[1fr_22rem] lg:items-center lg:py-24">
+      <div>
+        <p class="text-[0.72rem] font-extrabold tracking-[0.22em] text-gold">Love River · Kaohsiung, Taiwan</p>
+        <h1 class="display-title mt-4 text-white">Love River<br /><span class="font-medium italic text-river-light">Kaohsiung Travel Guide</span></h1>
+        <p class="mt-7 max-w-xl text-base leading-8 text-white/72 sm:text-lg">Boat cruises, night views, transport, waterfront attractions and day trips — all in one place.</p>
+        <p class="mt-4 max-w-xl text-sm leading-7 text-white/62">From downtown riverboats to the open harbor and upstream wetlands, choose the right part of Love River for your visit.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/en/areas/" class="btn-primary">Explore the river areas <span aria-hidden="true">→</span></a>
+          <a href="/en/boats/cruise-comparison/" class="btn-light">Compare boat cruises</a>
+          <a href="/en/transport/" class="rounded-full px-4 py-3 text-sm font-bold text-white underline decoration-white/30 hover:decoration-white">Which station?</a>
+          <a href="/en/itineraries/2-hour/" class="rounded-full px-4 py-3 text-sm font-bold text-white underline decoration-white/30 hover:decoration-white">Choose an itinerary</a>
+        </div>
+      </div>
+      <aside class="overflow-hidden rounded-3xl border border-white/15 bg-deep/55 shadow-2xl backdrop-blur-xl" aria-label="Quick visitor information">
+        <div class="border-b border-white/10 px-6 py-5"><p class="font-bold">Four things to know before you go</p></div>
+        <dl class="grid grid-cols-2">
+          <div class="border-b border-r border-white/10 p-5"><dt class="text-xs text-white/68">Riverbank access</dt><dd class="mt-2 text-sm font-extrabold">Generally 24 hours</dd></div>
+          <div class="border-b border-white/10 p-5"><dt class="text-xs text-white/68">Best time</dt><dd class="mt-2 text-sm font-extrabold">Before sunset</dd></div>
+          <div class="border-r border-white/10 p-5"><dt class="text-xs text-white/68">Classic section</dt><dd class="mt-2 text-sm font-extrabold">Ambassador Pier</dd></div>
+          <div class="p-5"><dt class="text-xs text-white/68">Suggested visit</dt><dd class="mt-2 text-sm font-extrabold">2 hours–half day</dd></div>
+        </dl>
+        <div class="border-t border-white/10 px-6 py-5"><GoogleRating variant="footer" showAddress={false} /></div>
+        <a href="/en/transport/" class="flex min-h-14 items-center justify-between bg-white px-6 text-sm font-extrabold text-navy no-underline">Which station for Love River? <span aria-hidden="true">↗</span></a>
+        <a href="/en/areas/love-river-vs-heart-vs-bay/" class="flex min-h-14 items-center justify-between border-t border-white/10 bg-white/10 px-6 text-sm font-extrabold text-white no-underline">Compare the three areas <span aria-hidden="true">↗</span></a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section-pad bg-cream">
+    <div class="site-shell">
+      <div class="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
+        <h2 class="section-title">Don't just search “Love River”<br />Choose the right section</h2>
+        <p class="max-w-xl text-base leading-8 text-ink/75 lg:justify-self-end">Downtown Love River, Love River Bay and Heart of Love River are different places. Each has its own nearest station and atmosphere.</p>
+      </div>
+      <div class="mt-12 grid gap-5 lg:grid-cols-3">
+        {areas.map(area => <a href={area.href} class="group overflow-hidden rounded-[1.7rem] bg-white text-ink no-underline shadow-[0_1.5rem_4rem_rgba(6,27,42,.08)]">
+          <div class="relative aspect-[4/3] overflow-hidden">
+            <Picture name={area.image} alt={area.title} class="h-full w-full object-cover transition duration-700 group-hover:scale-105" width={1280} height={960} />
+            <span class="absolute left-5 top-5 rounded-full bg-deep/80 px-3 py-1.5 text-[0.67rem] font-extrabold tracking-[0.15em] text-white">{area.number}</span>
+            <span class="absolute bottom-5 left-5 rounded-full bg-gold px-3 py-1.5 text-xs font-extrabold text-navy">{area.label}</span>
+          </div>
+          <div class="p-6"><h3 class="text-2xl font-extrabold tracking-[-0.04em] text-navy">{area.title}</h3><p class="mt-3 text-sm leading-6 text-ink/72">{area.desc}</p><p class="mt-5 border-t border-navy/8 pt-4 text-xs font-bold text-river">⌖ {area.station}</p></div>
+        </a>)}
+      </div>
+      <div class="mt-8 text-center"><a href="/en/areas/love-river-vs-heart-vs-bay/" class="btn-secondary">See the full area comparison →</a></div>
+    </div>
+  </section>
+
+  <section class="section-pad bg-sand">
+    <div class="site-shell">
+      <h2 class="section-title">How much time do you have?<br />Choose your own pace</h2>
+      <p class="mt-5 max-w-2xl text-base leading-8 text-ink/75">Pick a route for suggested stops, nearby stations and a practical sequence.</p>
+      <div class="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {itineraries.map(item => <a href={item.href} class="group flex min-h-52 flex-col rounded-3xl border border-navy/8 bg-white p-6 text-ink no-underline transition hover:-translate-y-1 hover:shadow-xl">
+          <span class="grid h-11 w-11 place-items-center rounded-2xl bg-river-light text-xl text-river">{item.icon}</span>
+          <h3 class="mt-7 text-xl font-extrabold tracking-[-0.03em] text-navy">{item.title}</h3>
+          <p class="mt-2 text-sm leading-6 text-ink/72">{item.desc}</p>
+          <span class="mt-auto pt-5 text-xs font-extrabold text-coral">View the route →</span>
+        </a>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad bg-cream">
+    <div class="site-shell grid gap-12 lg:grid-cols-[0.7fr_1.3fr]">
+      <div><h2 class="section-title">Love Boat<br />or gondola?</h2><p class="mt-5 max-w-sm text-base leading-8 text-ink/75">Both operate on the downtown river. Choose between guided sightseeing and a romantic small-boat atmosphere.</p><a href="/en/boats/cruise-comparison/" class="btn-primary mt-7">Compare cruises</a></div>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <article class="overflow-hidden rounded-[1.75rem] bg-navy text-white"><div class="aspect-[4/3] overflow-hidden"><Picture name="boat" alt="Love Boat sightseeing cruise on Love River" class="h-full w-full object-cover" width={1280} height={853} /></div><div class="p-6"><h3 class="text-2xl font-extrabold">Love Boat</h3><p class="mt-3 text-sm text-white/75">Guided tour · First-time visitors and families</p><p class="mt-3 text-sm">Typical trip: about 25 minutes</p><a href="/en/boats/love-boat/" class="mt-6 inline-flex text-sm font-extrabold text-gold no-underline">Boarding guide →</a></div></article>
+        <article class="overflow-hidden rounded-[1.75rem] bg-white shadow-xl"><div class="aspect-[4/3] overflow-hidden"><Picture name="gondola" alt="Gondola cruising on Love River at night" class="h-full w-full object-cover" width={1280} height={960} /></div><div class="p-6"><h3 class="text-2xl font-extrabold text-navy">Gondola</h3><p class="mt-3 text-sm text-ink/75">Romantic ride · Couples and special occasions</p><p class="mt-3 text-sm text-ink/75">Typical trip: about 25 minutes</p><a href="/en/boats/gondola/" class="mt-6 inline-flex text-sm font-extrabold text-coral no-underline">Boarding guide →</a></div></article>
+      </div>
+      <p class="lg:col-span-2 rounded-2xl border border-gold/30 bg-gold/10 px-5 py-4 text-xs text-ink/70">Timetables, tickets and cancellations depend on the operator's current announcements. <a href="/en/boats/" class="font-extrabold text-river">See all cruise information →</a></p>
+    </div>
+  </section>
+
+  <section class="section-pad bg-river-light"><div class="site-shell"><h2 class="section-title">Follow the river from north to harbor</h2><p class="mt-5 max-w-2xl text-base leading-8 text-ink/75">Heart of Love River is farther north, the classic cruise area lies in the middle, and Love River Bay opens into Kaohsiung Harbor. Use the section guides to choose your transit route.</p><div class="mt-8 grid gap-4 md:grid-cols-3">{areas.map(area => <a href={area.href} class="rounded-2xl bg-white p-6 text-navy no-underline shadow-sm"><p class="text-xs font-bold text-river">{area.number} · {area.station}</p><h3 class="mt-2 text-xl font-extrabold">{area.title}</h3><p class="mt-3 text-sm text-ink/70">{area.desc}</p></a>)}</div><a href="/en/transport/" class="btn-secondary mt-8">Transport and station guide →</a></div></section>
+
+  <section class="section-pad bg-cream"><div class="site-shell"><div class="flex flex-wrap items-end justify-between gap-5"><h2 class="section-title">Riverside highlights without backtracking</h2><a href="/en/places/" class="btn-secondary">All attractions</a></div><div class="mt-10 grid gap-5 md:grid-cols-3">{featuredPlaces.map(place => <a href={place.href} class="group relative aspect-[4/5] overflow-hidden rounded-[1.7rem] bg-deep text-white no-underline"><Picture name={place.image} alt={place.title} class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" width={1280} height={960} /><div class="absolute inset-0 bg-gradient-to-t from-deep via-deep/10 to-transparent"></div><div class="absolute inset-x-0 bottom-0 p-6"><p class="text-xs font-extrabold text-gold">{place.tag}</p><h3 class="mt-2 text-2xl font-extrabold">{place.title} ↗</h3></div></a>)}</div></div></section>
+
+  <section class="section-pad bg-sand" id="nearby-visits"><div class="site-shell"><div class="flex flex-wrap items-end justify-between gap-5"><div><p class="text-xs font-extrabold tracking-[0.18em] text-river">NEARBY · WALK · CULTURE</p><h2 class="section-title mt-3">Nearby places<br />Discover Kaohsiung beyond the river</h2><p class="mt-4 max-w-2xl text-sm leading-7 text-ink/70">Historic architecture, wetland habitats, harbor sunsets and Yancheng street life — add one or two stops to your waterfront route.</p></div><a href="/en/places/" class="btn-secondary">All nearby attractions →</a></div><div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{nearbyPlaces.map(place => <a href={place.href} class="group overflow-hidden rounded-[1.7rem] bg-white text-ink no-underline shadow-[0_1.5rem_4rem_rgba(6,27,42,.07)] transition hover:-translate-y-1 hover:shadow-xl"><div class="aspect-[16/10] overflow-hidden bg-river-light"><img src={`/images/${place.image}`} alt={`Photo of ${place.title}`} width="960" height="640" loading="lazy" decoding="async" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" /></div><div class="p-6"><p class="text-xs font-extrabold tracking-wider text-river">{place.label}</p><h3 class="mt-2 text-xl font-extrabold text-navy">{place.title}</h3><p class="mt-3 text-sm leading-7 text-ink/70">{place.detail}</p></div></a>)}</div></div></section>
+
+  <section class="section-pad bg-white"><div class="site-shell"><h2 class="section-title">Visitor services and practical facilities</h2><p class="mt-5 max-w-3xl text-base leading-8 text-ink/75">Plan toilets, drinking water, shade, accessible crossings, parking, dining and supplies before heading onto the riverbank. Facilities are spread across stations and surrounding neighborhoods.</p><div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{[{label:"Toilets & water",desc:"Check stations and public buildings."},{label:"Parking & transit",desc:"MRT and light rail save time."},{label:"Food & supplies",desc:"Cianjin and Yancheng offer more choices."},{label:"Accessible paths",desc:"Check bridge ramps and crossings."}].map(item => <div class="rounded-3xl border border-navy/8 p-6"><h3 class="text-lg font-extrabold text-navy">{item.label}</h3><p class="mt-3 text-sm leading-7 text-ink/70">{item.desc}</p></div>)}</div><a href="/en/facilities/" class="btn-secondary mt-8">Facilities and accessibility guide →</a></div></section>
+
+  <section class="section-pad bg-river-light"><div class="site-shell"><h2 class="section-title">Understand and protect the river</h2><p class="mt-5 max-w-3xl text-base leading-8 text-ink/75">Love River is an urban drainage corridor, tidal waterway, habitat and public meeting place. Water levels change, especially with tides and rainfall. Stay behind railings, take litter away and give birds and other wildlife space.</p><a href="/en/stewardship/" class="btn-secondary mt-7">River ecology and responsible visiting →</a></div></section>
+
+  <section class="section-pad bg-sand" id="about"><div class="site-shell grid gap-12 lg:grid-cols-[0.88fr_1.12fr]"><div><p class="text-xs font-extrabold tracking-[0.18em] text-river">ABOUT · LOCATION · HISTORY</p><h2 class="section-title mt-4">About Love River</h2><p class="mt-5 text-base leading-8 text-ink/75">Love River is one of Kaohsiung's most recognizable urban waterfronts. It links downtown riverbanks with a cultural harbor and quieter upstream landscapes for walks, cycling and sightseeing boats.</p><div class="mt-8"><GoogleRating variant="card" /></div></div><div class="grid gap-8"><article><h3 class="text-2xl font-extrabold text-navy">Location and getting there</h3><p class="mt-4 text-base leading-8 text-ink/75">The classic downtown riverside is near Hedong Road in Cianjin District, accessible from MRT O4 and O2. Use C10–C12 for the harbor and C24 for Heart of Love River. <a href="/en/transport/" class="font-extrabold text-river">Transport guide →</a></p></article><article><h3 class="text-2xl font-extrabold text-navy">Landmarks along the waterfront</h3><p class="mt-4 text-base leading-8 text-ink/75">The museum, historic church, music center, Dagang Bridge, Pier-2 and nearby old streets connect river scenery with Kaohsiung's port-city heritage. <a href="/en/places/" class="font-extrabold text-river">Nearby attractions →</a></p></article><article><h3 class="text-2xl font-extrabold text-navy">History and significance</h3><p class="mt-4 text-base leading-8 text-ink/75">Love River reflects Kaohsiung's changing relationship with industry, river management and public waterfront life. <a href="/en/history/" class="font-extrabold text-river">Explore the history →</a></p></article></div></div></section>
+
+  <section class="section-pad bg-cream"><div class="site-shell"><h2 class="section-title">Frequently asked questions</h2><div class="mt-8 grid gap-4 md:grid-cols-2">{faq.map(item => <article class="rounded-3xl bg-white p-6 shadow-sm"><h3 class="text-lg font-extrabold text-navy">{item.question}</h3><p class="mt-3 text-sm leading-7 text-ink/75">{item.answer}</p></article>)}</div><a href="/en/faq/" class="btn-secondary mt-8">All Love River questions →</a></div></section>
+
+  <section class="bg-gold py-14"><div class="site-shell grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center"><h2 class="text-3xl font-extrabold tracking-[-0.04em] text-navy sm:text-4xl">First visit? Start with the downtown river.</h2><div class="flex flex-wrap gap-3 lg:justify-end"><a href="/en/guide/" class="btn-light">Complete guide</a><a href="/en/transport/" class="btn-secondary !border-navy/20 !bg-transparent">Getting there</a></div></div></section>
+
+  <section class="section-pad bg-white"><div class="site-shell"><h2 class="section-title">Sources and information updates</h2><p class="mt-5 max-w-3xl text-base leading-8 text-ink/75">Attraction information is checked against tourism, transit and venue sources. Always confirm current boat operations, exhibition hours and event restrictions before departure.</p><a href="/en/sources/" class="btn-secondary mt-7">View information sources →</a></div></section>
+</BaseLayout>
